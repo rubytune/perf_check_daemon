@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+
+require 'resque'
+
+require 'time'
+
+require_relative "../lib/perf_check_job"
+
+max_notification_time = nil
+
+api("repos/#{github.repo}/notifications").each do |notification|
+  next unless notification['reason'] == 'mention'
+  next unless notification['subject']['type'] == 'PullRequest'
+
+  notification_time = Time.parse(notification['updated_at'])
+  max_notification_time ||= notification_time
+  max_notification_time = [max_notification_time, notification_time].max
+
+  pull = api(notification['subject']['url'])
+
+  job = {
+    pull_request: pull['url'],
+    pull_request_comments: pull['comments_url'],
+    branch: pull['head']['ref'],
+    reference: pull['base']['ref'],
+    sha: pull['head']['sha'],
+    reference_sha: pull['head']['sha']
+  }
+
+  api(pull['comments_url']).each do |comment|
+    comment_time = Time.parse(comment['updated_at'])
+    next if comment_time + 3 < notification_time
+
+    if comment['body'] =~ /^@#{github.user} (.+)/
+      job[:arguments] = $1
+
+      warn("job: " + job.to_json)
+      Resque.enqueue(PerfCheckJob, job)
+    end
+  end
+end
+
+if max_notification_time
+  api("repos/#{github.repo}/notifications",
+      { last_read_at: (max_notification_time+1).iso8601 },
+      put: true)
+end

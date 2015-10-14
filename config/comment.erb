@@ -1,0 +1,12 @@
+<% job[:checks].each do |check| %>
+### <%= check[:route] %>
+                        | runtime (ms) | queries
+------------------------|--------------|----------------
+<%= job[:branch] %>     |<%= sprintf('%.1f', check[:latency]) %>|<%= check[:query_count] %>
+
+<%= job[:reference] %>  |<%= sprintf('%.1f', check[:reference_latency]) %>|<%= check[:reference_query_count] %>
+
+**Δ**                   |**<%= sprintf('%.1f', check[:latency_difference]) %>**
+<% end %>
+
+[See more details](<%= gist_url %>)

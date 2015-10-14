@@ -1,0 +1,23 @@
+# [<%= job[:branch] %> vs <%= job[:reference] %>](<%= job[:pull_request] %>)
+
+<% job[:checks].each do |check| %>
+## <%= check[:route] %>
+                        | runtime (ms) | queries
+------------------------|--------------|----------------
+<%= job[:branch] %>     |<%= sprintf('%.1f', check[:latency]) %>|<%= check[:query_count] %>
+
+<%= job[:reference] %>  |<%= sprintf('%.1f', check[:reference_latency]) %>|<%= check[:reference_query_count] %>
+
+**Δ**                   |**<%= sprintf('%.1f', check[:latency_difference]) %>**
+
+<% [[job[:branch], check[:requests]], [job[:reference], check[:reference_requests]]].each do |branch, requests| %>
+#### <%= branch %>
+\#  | runtime (ms) | status | queries | final rss (MB)
+----|--------------|--------|---------|-----------------
+<% requests.each_with_index do |r, i| %>
+<%= i %> | <%= sprintf('%.1f', r[:latency]) %> | <%= r[:response_code] %> | <%= r[:query_count] %> | <%= sprintf('%.1f', r[:server_memory]) %>
+
+<% end %>
+
+<% end %>
+<% end %>

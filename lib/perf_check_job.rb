@@ -11,7 +11,7 @@ class PerfCheckJob
   def self.perform(job)
     paths = sanitize_arguments(job.fetch('arguments'))
 
-    app_path = Shellwords.escape(app.path)
+    app_path = Shellwords.escape(config.app.path)
     paths = Shellwords.split(paths).map{ |p| Shellwords.escape(p) }.join(' ')
 
     perf_check_output = Bundler.with_clean_env do

@@ -1,0 +1,8 @@
+app:
+  path: /abc/xyz   # path to the app under test
+github:
+  repo: user/repo  # repository to watch
+  user: bob        # look for @bob mentions
+  token: abc123    # api token  
+redis:
+  password: xyz    # redis password, if needed

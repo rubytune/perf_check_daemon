@@ -1,5 +1,6 @@
 
 require 'httparty'
+require 'resque'
 
 require 'ostruct'
 require 'yaml'
@@ -15,19 +16,9 @@ class Hash
   end
 end
 
-def secrets
+def config
   root = File.expand_path("#{File.dirname(__FILE__)}/..")
-  YAML.load_file("#{root}/config/secrets.yml").to_ostruct
-end
-
-def github
-  root = File.expand_path("#{File.dirname(__FILE__)}/..")
-  YAML.load_file("#{root}/config/github.yml").to_ostruct
-end
-
-def app
-  root = File.expand_path("#{File.dirname(__FILE__)}/..")
-  YAML.load_file("#{root}/config/app.yml").to_ostruct
+  YAML.load_file("#{root}/config/daemon.yml").to_ostruct
 end
 
 def gist_template
@@ -45,7 +36,7 @@ def api(path, data={}, put: false, post: false)
   url = path.match(/^https?:/) ? path : "https://api.github.com/#{path}"
 
   options = {
-    query: { access_token: secrets.github.token },
+    query: { access_token: config.github.token },
     body: data.to_json
   }
 
@@ -59,3 +50,12 @@ def api(path, data={}, put: false, post: false)
 
   JSON.parse(resp.body) if resp.body
 end
+
+
+config.redis = {
+  host: 'localhost',
+  port: 6379
+}.merge(config.redis || {}).to_ostruct
+
+
+Resque.redis = Redis.new(config.redis.to_h)

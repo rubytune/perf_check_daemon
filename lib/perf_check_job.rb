@@ -45,6 +45,7 @@ class PerfCheckJob
         latency: check.fetch('latency'),
         reference_latency: check.fetch('reference_latency'),
         latency_difference: check.fetch('latency_difference'),
+        speedup_factor: check.fetch('speedup_factor'),
         query_count: check.fetch('query_count'),
         reference_query_count: check.fetch('reference_query_count')
       }.merge(
@@ -111,6 +112,37 @@ class PerfCheckJob
 
     def initialize(job, gist_url)
       @job, @gist_url = job, gist_url
+    end
+
+    def latency_check(check)
+      check[:speedup_factor] >= 0.8 ? ':white_check_mark:' : ':x:'
+    end
+
+    def latency_change(check)
+      if check[:speedup_factor] < 0.8
+        sprintf('%.1fx slower than %s', check[:speedup_factor], job[:reference])
+      elsif check[:speedup_factor] > 1.2
+        sprintf('%.1fx faster than %s', check[:speedup_factor].abs, job[:reference])
+      else
+        "about the same as #{job[:reference]}"
+      end << sprintf(' (%dms vs %dms)', check[:latency], check[:reference_latency])
+    end
+
+    def query_check_and_change(check)
+      l = config.limits.queries
+      if check[:query_count] < check[:reference_query_count] && check[:reference_query_count] >= l
+        ":white_check_mark: Reduced AR queries from #{check[:reference_query_count]} to #{check[:query_count]}!"
+      elsif check[:query_count] > check[:reference_query_count] && check[:reference_query_count] >= l
+        ":x: Increased AR queries from #{check[:reference_query_count]} to #{check[:query_count]}!"
+      elsif check[:query_count] == check[:reference_query_count] && check[:reference_query_count] >= l
+        ":warning: #{check[:query_count]} AR queries were made"
+      end
+    end
+
+    def absolute_latency_check(check)
+      if check[:reference_latency] > config.limits.latency
+        sprintf(":warning: Takes over %.1f seconds", config.limits.latency.to_f / 1000)
+      end
     end
   end
 end

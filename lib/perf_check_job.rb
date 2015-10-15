@@ -13,11 +13,17 @@ class PerfCheckJob
 
     app_path = Shellwords.escape(config.app.path)
     paths = Shellwords.split(paths).map{ |p| Shellwords.escape(p) }.join(' ')
+    branch = Shellwords.escape(job.fetch('branch'))
 
     perf_check_output = Bundler.with_clean_env do
       JSON.parse(`cd #{app_path} &&
                   git fetch --all 1>&2 &&
-                  bundle exec perf_check -j #{paths}`)
+                  git checkout #{branch} 1>&2 &&
+                  git submodule update 1>&2 &&
+                  git pull 1>&2 &&
+                  git submodule update 1>&2 &&
+                  bundle 1>&2 &&
+                  bundle exec perf_check -jn3 #{paths}`)
     end
 
     job = {

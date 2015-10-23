@@ -32,7 +32,7 @@ api("repos/#{github.repo}/notifications").each do |notification|
     next if comment_time + 3 < notification_time
 
     comment['body'].scan(/^@#{github.user} (.+)/).each do |args|
-      job[:arguments] = args
+      job[:arguments] = args[0].strip
 
       warn("job: " + job.to_json)
       Resque.enqueue(PerfCheckJob, job)

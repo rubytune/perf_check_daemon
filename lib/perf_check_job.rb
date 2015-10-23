@@ -114,7 +114,7 @@ class PerfCheckJob
 
     def latency_change(check)
       if check[:speedup_factor] < 0.8
-        sprintf('%.1fx slower than %s', check[:speedup_factor], job[:reference])
+        sprintf('%.1fx slower than %s', 1/check[:speedup_factor], job[:reference])
       elsif check[:speedup_factor] > 1.2
         sprintf('%.1fx faster than %s', check[:speedup_factor].abs, job[:reference])
       else
@@ -126,7 +126,7 @@ class PerfCheckJob
       l = config.limits.queries
       if check[:query_count] < check[:reference_query_count] && check[:reference_query_count] >= l
         ":white_check_mark: Reduced AR queries from #{check[:reference_query_count]} to #{check[:query_count]}!"
-      elsif check[:query_count] > check[:reference_query_count] && check[:reference_query_count] >= l
+      elsif check[:query_count] > check[:reference_query_count] && check[:query_count] >= l
         ":x: Increased AR queries from #{check[:reference_query_count]} to #{check[:query_count]}!"
       elsif check[:query_count] == check[:reference_query_count] && check[:reference_query_count] >= l
         ":warning: #{check[:query_count]} AR queries were made"

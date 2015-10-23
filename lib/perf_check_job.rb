@@ -10,9 +10,11 @@ class PerfCheckJob
 
   def self.perform(job)
     args = job.fetch('arguments').strip
+    defaults = config.defaults || ''
 
     app_path = Shellwords.escape(config.app.path)
     args = Shellwords.split(args).map{ |p| Shellwords.escape(p) }.join(' ')
+    defaults = Shellwords.split(defaults).map{ |p| Shellwords.escape(p) }.join(' ')
     branch = Shellwords.escape(job.fetch('branch'))
 
     perf_check_output = Bundler.with_clean_env do
@@ -23,7 +25,7 @@ class PerfCheckJob
                   git pull 1>&2 &&
                   git submodule update 1>&2 &&
                   bundle 1>&2 &&
-                  bundle exec perf_check -jn3 #{args}`)
+                  bundle exec perf_check #{defaults} -j #{args}`)
     end
 
     job = {

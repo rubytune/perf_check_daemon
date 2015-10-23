@@ -9,3 +9,4 @@ redis:
 limits:
   queries: 75      # max number of queries in a request before warning is raised
   latency: 4000    # max request latency before warning is raised
+defaults: -n3      # default perf_check arguments

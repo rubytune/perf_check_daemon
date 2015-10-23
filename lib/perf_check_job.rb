@@ -136,7 +136,7 @@ class PerfCheckJob
     end
 
     def absolute_latency_check(check)
-      if check[:reference_latency] > config.limits.latency
+      if check[:latency] > config.limits.latency
         sprintf(":warning: Takes over %.1f seconds", config.limits.latency.to_f / 1000)
       end
     end

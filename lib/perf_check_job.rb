@@ -17,7 +17,9 @@ class PerfCheckJob
     defaults = Shellwords.split(defaults).map{ |p| Shellwords.escape(p) }.join(' ')
     branch = Shellwords.escape(job.fetch('branch'))
 
+    git_ssh = ENV['GIT_SSH']
     perf_check_output = Bundler.with_clean_env do
+      ENV['GIT_SSH'] = git_ssh
       JSON.parse(`cd #{app_path} &&
                   git fetch --all 1>&2 &&
                   git checkout #{branch} 1>&2 &&

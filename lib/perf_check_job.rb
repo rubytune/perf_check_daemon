@@ -9,10 +9,10 @@ class PerfCheckJob
   @queue = :perf_check_jobs
 
   def self.perform(job)
-    paths = sanitize_arguments(job.fetch('arguments'))
+    args = job.fetch('arguments').strip
 
     app_path = Shellwords.escape(config.app.path)
-    paths = Shellwords.split(paths).map{ |p| Shellwords.escape(p) }.join(' ')
+    args = Shellwords.split(args).map{ |p| Shellwords.escape(p) }.join(' ')
     branch = Shellwords.escape(job.fetch('branch'))
 
     perf_check_output = Bundler.with_clean_env do
@@ -23,7 +23,7 @@ class PerfCheckJob
                   git pull 1>&2 &&
                   git submodule update 1>&2 &&
                   bundle 1>&2 &&
-                  bundle exec perf_check -jn3 #{paths}`)
+                  bundle exec perf_check -jn3 #{args}`)
     end
 
     job = {
@@ -91,12 +91,6 @@ class PerfCheckJob
     erb = ERB.new(File.read(comment_template), nil, '<>')
     erb.filename = comment_template
     erb.result(b)
-  end
-
-  def self.sanitize_arguments(args)
-    args.strip.split(/\s+/).reject do |arg|
-      arg.strip.match(/^-/)
-    end.join(' ')
   end
 
   class GistHelper

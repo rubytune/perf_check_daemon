@@ -6,6 +6,8 @@ require 'ostruct'
 require 'yaml'
 require 'json'
 
+require 'logger'
+
 class Hash
   def to_ostruct
     o = OpenStruct.new(self)
@@ -48,9 +50,35 @@ def api(path, data={}, put: false, post: false)
     resp = HTTParty.get(url, options)
   end
 
-  JSON.parse(resp.body) if resp.body
+  api_log(path, resp)
+
+  if resp.success? && resp.body
+    JSON.parse(resp.body)
+  elsif resp.success?
+    true
+  end
 end
 
+def api_log(path, resp)
+  json = JSON.parse(resp.body) if resp.body
+
+  limit = resp.headers['x-ratelimit-limit']
+  remaining = resp.headers['x-ratelimit-remaining']
+  used = limit.to_i - remaining.to_i
+
+  severity = resp.success? ? Logger::INFO : Logger::WARN
+
+  tail = "(#{used}/#{limit}): /#{path}"
+  if json.is_a?(Hash) && json['message']
+    logger.log(severity, "GITHUB #{resp.code} \"#{json['message']}'\" #{tail}")
+  else
+    logger.log(severity, "GITHUB #{resp.code} #{tail}")
+  end
+end
+
+def logger
+  @logger ||= Logger.new(STDERR)
+end
 
 config.redis = {
   host: 'localhost',

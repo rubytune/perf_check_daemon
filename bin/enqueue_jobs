@@ -34,7 +34,7 @@ api("repos/#{github.repo}/notifications").each do |notification|
     comment['body'].scan(/^@#{github.user} (.+)/).each do |args|
       job[:arguments] = args[0].strip
 
-      warn("job: " + job.to_json)
+      logger.info("job: " + job.to_json)
       Resque.enqueue(PerfCheckJob, job)
     end
   end

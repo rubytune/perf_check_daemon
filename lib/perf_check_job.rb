@@ -145,14 +145,10 @@ class PerfCheckJob
       end
     end
 
-    def http_status_check(check)
+    def http_errors(check)
       statuses = check[:requests].map{ |r| r[:response_code] }
       statuses += check[:reference_requests].map{ |r| r[:response_code] }
-      successes, failures = statuses.uniq.partition{ |code| (200...400).include?(code) }
-
-      unless failures.empty?
-        ":x: Encountered HTTP errors (#{failures.join(', ')})\n"
-      end
+      statuses.uniq.reject{ |code| (200...400).include?(code) }
     end
   end
 end

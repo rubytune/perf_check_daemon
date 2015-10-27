@@ -1,11 +1,13 @@
 <% job[:checks].each do |check| -%>
 **<%= check[:route] %>**
+<% if http_errors(check).empty? -%>
 <%= latency_check(check) %> <%= latency_change(check) %>
 <%= query_check_and_change(check) -%>
 <%= absolute_latency_check(check) -%>
-<%= http_status_check(check) -%>
+<% else -%>
+:x: Encoutered HTTP errors (<%= http_errors(check).join(', ') %>)
+<% end -%>
 
-
-<% end %>
+<% end -%>
 
 [See more details](<%= gist_url %>).

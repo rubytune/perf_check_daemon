@@ -60,8 +60,6 @@ def api(path, data={}, put: false, post: false)
 end
 
 def api_log(path, resp)
-  json = JSON.parse(resp.body) if resp.body
-
   limit = resp.headers['x-ratelimit-limit']
   remaining = resp.headers['x-ratelimit-remaining']
   used = limit.to_i - remaining.to_i
@@ -69,11 +67,8 @@ def api_log(path, resp)
   severity = resp.success? ? Logger::INFO : Logger::WARN
 
   tail = "(#{used}/#{limit}): /#{path}"
-  if json.is_a?(Hash) && json['message']
-    logger.log(severity, "GITHUB #{resp.code} \"#{json['message']}'\" #{tail}")
-  else
-    logger.log(severity, "GITHUB #{resp.code} #{tail}")
-  end
+  logger.log(severity, "GITHUB #{resp.code} #{tail}")
+  logger.warn(resp.body) unless resp.success?
 end
 
 def logger

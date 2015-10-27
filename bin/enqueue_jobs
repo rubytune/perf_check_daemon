@@ -27,7 +27,7 @@ api("repos/#{github.repo}/notifications").each do |notification|
   }
 
   pull_time = Time.parse(pull['created_at'])
-  if pull_time + 3 < notification_time
+  unless pull_time + 3 < notification_time
     each_job(pull['body']) do |args|
       job[:arguments] = args
 

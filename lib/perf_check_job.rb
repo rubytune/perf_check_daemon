@@ -74,6 +74,8 @@ class PerfCheckJob
 
     gist_name = "#{job[:branch]}-#{job[:branch_sha][0,7]}" <<
                 "-#{job[:reference]}-#{job[:reference_sha][0,7]}.md"
+    gist_name.gsub!('/', '_')
+
     gist = { gist_name => { content: gist_content(job) } }
     gist = api "/gists", { public: false, files: gist }, post: true
 

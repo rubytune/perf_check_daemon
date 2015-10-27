@@ -115,12 +115,12 @@ class PerfCheckJob
     end
 
     def latency_check(check)
-      threshold = config.change_factor
+      threshold = config.limits.change_factor
       check[:speedup_factor] >= (1 - threshold) ? ':white_check_mark:' : ':x:'
     end
 
     def latency_change(check)
-      threshold = config.change_factor
+      threshold = config.limits.change_factor
       if check[:speedup_factor] < 1 - threshold
         sprintf('%.1fx slower than %s', 1/check[:speedup_factor], job[:reference])
       elsif check[:speedup_factor] > 1 + threshold

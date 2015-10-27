@@ -30,7 +30,7 @@ api("repos/#{github.repo}/notifications").each do |notification|
 
   each_job(pull['body']) do |args|
     if pull_time + 3 < notification_time
-      logger.info("Disregarding PR mention from #{pull_time} (notification is #{notification}): #{pull['html_url']}")
+      logger.info("Disregarding PR mention from #{pull_time} (notification is #{notification_time}): #{pull['html_url']}")
     else
       job[:arguments] = args
 
@@ -44,7 +44,7 @@ api("repos/#{github.repo}/notifications").each do |notification|
 
     each_job(comment['body']) do |args|
       if comment_time + 3 < notification_time
-        logger.info("Disregarding mention from #{comment_time} (notification is #{notification}): #{comment['html_url']}")
+        logger.info("Disregarding mention from #{comment_time} (notification is #{notification_time}): #{comment['html_url']}")
       else
         job[:arguments] = args
 

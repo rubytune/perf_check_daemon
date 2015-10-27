@@ -131,17 +131,27 @@ class PerfCheckJob
     def query_check_and_change(check)
       l = config.limits.queries
       if check[:query_count] < check[:reference_query_count] && check[:reference_query_count] >= l
-        ":white_check_mark: Reduced AR queries from #{check[:reference_query_count]} to #{check[:query_count]}!"
+        ":white_check_mark: Reduced AR queries from #{check[:reference_query_count]} to #{check[:query_count]}!\n"
       elsif check[:query_count] > check[:reference_query_count] && check[:query_count] >= l
-        ":x: Increased AR queries from #{check[:reference_query_count]} to #{check[:query_count]}!"
+        ":x: Increased AR queries from #{check[:reference_query_count]} to #{check[:query_count]}!\n"
       elsif check[:query_count] == check[:reference_query_count] && check[:reference_query_count] >= l
-        ":warning: #{check[:query_count]} AR queries were made"
+        ":warning: #{check[:query_count]} AR queries were made\n"
       end
     end
 
     def absolute_latency_check(check)
       if check[:latency] > config.limits.latency
         sprintf(":warning: Takes over %.1f seconds", config.limits.latency.to_f / 1000)
+      end
+    end
+
+    def http_status_check(check)
+      statuses = check[:requests].map{ |r| r[:response_code] }
+      statuses += check[:reference_requests].map{ |r| r[:response_code] }
+      successes, failures = statuses.uniq.partition{ |code| (200...400).include?(code) }
+
+      unless failures.empty?
+        ":x: Encountered HTTP errors (#{failures.join(', ')})\n"
       end
     end
   end

@@ -1,12 +1,10 @@
-<% job[:checks].each do |check| %>
+<% job[:checks].each do |check| -%>
 **<%= check[:route] %>**
 <%= latency_check(check) %> <%= latency_change(check) %>
+<%= query_check_and_change(check) -%>
+<%= absolute_latency_check(check) -%>
 
-<%= query_check_and_change(check) %>
-
-<%= absolute_latency_check(check) %>
 
 <% end %>
-
 
 [See more details](<%= gist_url %>).

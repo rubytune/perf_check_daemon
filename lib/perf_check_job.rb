@@ -94,7 +94,7 @@ class PerfCheckJob
 
   def self.comment_content(job, gist_url)
     b = CommentHelper.new(job, gist_url).instance_eval{ binding }
-    erb = ERB.new(File.read(comment_template), nil, '<>')
+    erb = ERB.new(File.read(comment_template), nil, '-')
     erb.filename = comment_template
     erb.result(b)
   end

@@ -27,8 +27,11 @@ api("repos/#{github.repo}/notifications").each do |notification|
   }
 
   pull_time = Time.parse(pull['created_at'])
-  unless pull_time + 3 < notification_time
-    each_job(pull['body']) do |args|
+
+  each_job(pull['body']) do |args|
+    if pull_time + 3 < notification_time
+      logger.info("Disregarding PR mention from #{pull_time} (notification is #{notification}): #{pull['html_url']}")
+    else
       job[:arguments] = args
 
       logger.info("job: " + job.to_json)
@@ -38,13 +41,16 @@ api("repos/#{github.repo}/notifications").each do |notification|
 
   api(pull['comments_url']).each do |comment|
     comment_time = Time.parse(comment['updated_at'])
-    next if comment_time + 3 < notification_time
 
     each_job(comment['body']) do |args|
-      job[:arguments] = args
+      if comment_time + 3 < notification_time
+        logger.info("Disregarding mention from #{comment_time} (notification is #{notification}): #{comment['html_url']}")
+      else
+        job[:arguments] = args
 
-      logger.info("job: " + job.to_json)
-      Resque.enqueue(PerfCheckJob, job)
+        logger.info("job: " + job.to_json)
+        Resque.enqueue(PerfCheckJob, job)
+      end
     end
   end
 end

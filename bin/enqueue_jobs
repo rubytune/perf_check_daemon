@@ -4,7 +4,6 @@ require 'time'
 
 require_relative "../lib/perf_check_job"
 
-github = config.github
 
 max_notification_time = nil
 

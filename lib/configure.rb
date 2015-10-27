@@ -23,6 +23,10 @@ def config
   YAML.load_file("#{root}/config/daemon.yml").to_ostruct
 end
 
+def github
+  config.github
+end
+
 def gist_template
   root = File.expand_path("#{File.dirname(__FILE__)}/..")
   "#{root}/config/gist.erb"
@@ -38,7 +42,7 @@ def api(path, data={}, put: false, post: false)
   url = path.match(/^https?:/) ? path : "https://api.github.com/#{path}"
 
   options = {
-    query: { access_token: config.github.token },
+    query: { access_token: github.token },
     body: data.to_json
   }
 

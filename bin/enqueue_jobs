@@ -26,12 +26,22 @@ api("repos/#{github.repo}/notifications").each do |notification|
     reference_sha: pull['head']['sha']
   }
 
+  pull_time = Time.parse(pull['created_at'])
+  if pull_time + 3 < notification_time
+    each_job(pull['body']) do |args|
+      job[:arguments] = args
+
+      logger.info("job: " + job.to_json)
+      Resque.enqueue(PerfCheckJob, job)
+    end
+  end
+
   api(pull['comments_url']).each do |comment|
     comment_time = Time.parse(comment['updated_at'])
     next if comment_time + 3 < notification_time
 
-    comment['body'].scan(/^@#{github.user} (.+)/).each do |args|
-      job[:arguments] = args[0].strip
+    each_job(comment['body']) do |args|
+      job[:arguments] = args
 
       logger.info("job: " + job.to_json)
       Resque.enqueue(PerfCheckJob, job)

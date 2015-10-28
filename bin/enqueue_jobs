@@ -2,75 +2,17 @@
 
 require 'time'
 
+require_relative "../lig/configure"
 require_relative "../lib/perf_check_job"
+require_relative "../lib/github_poller"
 
+poller = GithubPoller.new(github).poll
 
-max_notification_time = nil
+max_notification_time = poller.poll
 
-api("repos/#{github.repo}/notifications").each do |notification|
-  next unless notification['reason'] == 'mention'
-  next unless notification['subject']['type'] == 'PullRequest'
-
-  notification_time = Time.parse(notification['updated_at'])
-  max_notification_time ||= notification_time
-  max_notification_time = [max_notification_time, notification_time].max
-
-  pull = api(notification['subject']['url'])
-
-  job = {
-    pull_request: pull['url'],
-    pull_request_comments: pull['comments_url'],
-    branch: pull['head']['ref'],
-    reference: pull['base']['ref'],
-    sha: pull['head']['sha'],
-    reference_sha: pull['head']['sha']
-  }
-
-  pull_time = Time.parse(pull['created_at'])
-
-  each_job(pull['body']) do |args|
-    if pull_time + 3 < notification_time
-      logger.info("Disregarding PR mention from #{pull_time} (notification is #{notification_time}): #{pull['html_url']}")
-    else
-      job[:arguments] = args
-
-      logger.info("job: " + job.to_json)
-      Resque.enqueue(PerfCheckJob, job)
-    end
-  end
-
-  api(pull['comments_url']).each do |comment|
-    comment_time = Time.parse(comment['updated_at'])
-
-    each_job(comment['body']) do |args|
-      if comment_time + 3 < notification_time
-        logger.info("Disregarding mention from #{comment_time} (notification is #{notification_time}): #{comment['html_url']}")
-      else
-        job[:arguments] = args
-
-        logger.info("job: " + job.to_json)
-        Resque.enqueue(PerfCheckJob, job)
-      end
-    end
-  end
-
-  api(pull['review_comments_url']).each do |comment|
-    comment_time = Time.parse(comment['updated_at'])
-
-    job[:pull_request_comments] = pull['review_comments_url']
-    job[:pull_request_comment_id] = comment['id']
-
-    each_job(comment['body']) do |args|
-      if comment_time + 3 < notification_time
-        logger.info("Disregarding mention from #{comment_time} (notification is #{notification_time}): #{comment['html_url']}")
-      else
-        job[:arguments] = args
-
-        logger.info("job: " + job.to_json)
-        Resque.enqueue(PerfCheckJob, job)
-      end
-    end
-  end
+poller.jobs.each do |job|
+  logger.info("job: " + job.to_json)
+  Resque.enqueue(PerfCheckJob, job)
 end
 
 if max_notification_time

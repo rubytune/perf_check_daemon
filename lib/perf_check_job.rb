@@ -1,7 +1,7 @@
 
-
 require 'erb'
 require 'shellwords'
+require 'json'
 
 require_relative "configure"
 
@@ -20,17 +20,18 @@ class PerfCheckJob
     git_ssh = ENV['GIT_SSH']
     perf_check_output = Bundler.with_clean_env do
       ENV['GIT_SSH'] = git_ssh
-      JSON.parse(`cd #{app_path} &&
-                  git fetch --all 1>&2 &&
-                  git checkout master 1>&2 &&
-                  git submodule update 1>&2 &&
-                  git pull 1>&2 &&
-                  git checkout #{branch} 1>&2 &&
-                  git submodule update 1>&2 &&
-                  git pull 1>&2 &&
-                  git submodule update 1>&2 &&
-                  bundle 1>&2 &&
-                  bundle exec perf_check #{defaults} -j #{args}`)
+      output = capture("cd #{app_path} &&
+                        git fetch --all 1>&2 &&
+                        git checkout master 1>&2 &&
+                        git submodule update 1>&2 &&
+                        git pull 1>&2 &&
+                        git checkout #{branch} 1>&2 &&
+                        git submodule update 1>&2 &&
+                        git pull 1>&2 &&
+                        git submodule update 1>&2 &&
+                        bundle 1>&2 &&
+                        bundle exec perf_check #{defaults} -j #{args}")
+      JSON.parse(output)
     end
 
     job = {
@@ -104,6 +105,10 @@ class PerfCheckJob
     erb = ERB.new(File.read(comment_template), nil, '-')
     erb.filename = comment_template
     erb.result(b)
+  end
+
+  def self.capture(command)
+    `#{command}`
   end
 
   class GistHelper

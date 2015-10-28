@@ -79,12 +79,6 @@ def logger
   @logger ||= Logger.new(STDERR)
 end
 
-def each_job(text)
-  text.scan(/^@#{github.user} (.+)/).each do |args|
-    yield(args.first)
-  end
-end
-
 config.redis = {
   host: 'localhost',
   port: 6379

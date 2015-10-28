@@ -16,7 +16,7 @@ class GithubPoller
   def scan_mentions(notification_timestamp, timestamp, object)
     each_mention(object['body']) do |args|
       if timestamp + 3 < notification_timestamp
-        logger.info("Disregarding PR mention from #{timestamp} (notification is #{notification_timestamp}): #{object['html_url']}")
+        log_disregarded_mention(timestamp, notification_timestamp, object['html_url'])
       else
         job_template[:arguments] = args
         jobs.push(job_template.dup)
@@ -70,5 +70,9 @@ class GithubPoller
     end
 
     max_notification_time
+  end
+
+  def log_disregarded_mention(t, nt, url)
+    logger.info("Disregarding mention from #{t} (notification is #{nt}): #{url}")
   end
 end

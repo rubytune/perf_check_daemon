@@ -2,7 +2,7 @@
 
 require 'time'
 
-require_relative "../lig/configure"
+require_relative "../lib/configure"
 require_relative "../lib/perf_check_job"
 require_relative "../lib/github_poller"
 

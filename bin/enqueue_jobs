@@ -6,7 +6,7 @@ require_relative "../lib/configure"
 require_relative "../lib/perf_check_job"
 require_relative "../lib/github_poller"
 
-poller = GithubPoller.new(github).poll
+poller = GithubPoller.new(github)
 
 max_notification_time = poller.poll
 

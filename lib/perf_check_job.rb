@@ -36,7 +36,8 @@ class PerfCheckJob
       branch_sha: job.fetch('sha'),
       reference_sha: job.fetch('reference_sha'),
       pull_request: job.fetch('pull_request'),
-      pull_request_comments: job.fetch('pull_request_comments')
+      pull_request_comments: job.fetch('pull_request_comments'),
+      pull_request_comment_id: job['pull_request_comment_id']
     }
 
     post_results(job, perf_check_output)
@@ -80,6 +81,9 @@ class PerfCheckJob
     gist = api "/gists", { public: false, files: gist }, post: true
 
     comment = { body: comment_content(job, gist.fetch('html_url')) }
+    if job.key?(:pull_request_comment_id)
+      comment[:in_reply_to] = job[:pull_request_comment_id]
+    end
     api job.fetch(:pull_request_comments), comment, post: true
 
     true

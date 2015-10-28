@@ -22,6 +22,9 @@ class PerfCheckJob
       ENV['GIT_SSH'] = git_ssh
       JSON.parse(`cd #{app_path} &&
                   git fetch --all 1>&2 &&
+                  git checkout master 1>&2 &&
+                  git submodule update 1>&2 &&
+                  git pull 1>&2 &&
                   git checkout #{branch} 1>&2 &&
                   git submodule update 1>&2 &&
                   git pull 1>&2 &&

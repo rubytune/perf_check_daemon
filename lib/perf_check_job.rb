@@ -21,6 +21,7 @@ class PerfCheckJob
     perf_check_output = Bundler.with_clean_env do
       ENV['GIT_SSH'] = git_ssh
       output = capture("cd #{app_path} &&
+                        git remote prune origin 1>&2 &&
                         git fetch --all 1>&2 &&
                         git checkout master 1>&2 &&
                         git submodule update 1>&2 &&

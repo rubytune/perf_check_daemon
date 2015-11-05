@@ -73,6 +73,6 @@ class GithubPoller
   end
 
   def log_disregarded_mention(t, nt, url)
-    logger.info("Disregarding mention from #{t} (notification is #{nt}): #{url}")
+    logger.debug("Disregarding mention from #{t} (notification is #{nt}): #{url}")
   end
 end

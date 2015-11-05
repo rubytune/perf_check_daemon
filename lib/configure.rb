@@ -71,7 +71,7 @@ def api_log(path, resp)
   severity = resp.success? ? Logger::INFO : Logger::WARN
 
   tail = "(#{used}/#{limit}): /#{path}"
-  logger.log(severity, "GITHUB #{resp.code} #{tail}")
+  logger.debug(severity, "GITHUB #{resp.code} #{tail}")
   logger.warn(resp.body) unless resp.success?
 end
 

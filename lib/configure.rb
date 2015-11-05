@@ -68,10 +68,10 @@ def api_log(path, resp)
   remaining = resp.headers['x-ratelimit-remaining']
   used = limit.to_i - remaining.to_i
 
-  severity = resp.success? ? Logger::INFO : Logger::WARN
+  severity = resp.success? ? Logger::DEBUG : Logger::WARN
 
   tail = "(#{used}/#{limit}): /#{path}"
-  logger.debug(severity, "GITHUB #{resp.code} #{tail}")
+  logger.log(severity, "GITHUB #{resp.code} #{tail}")
   logger.warn(resp.body) unless resp.success?
 end
 

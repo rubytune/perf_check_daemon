@@ -8,7 +8,7 @@
 
 <%= job[:reference] %>  |<%= sprintf('%.1f', check[:reference_latency]) %>|<%= check[:reference_query_count] %>
 
-**Δ**                   |**<%= sprintf('%.1f', check[:latency_difference]) %>**
+**Δ**                   |**<%= sprintf('%+.1f', check[:latency_difference]) %>**
 
 <% [[job[:branch], check[:requests]], [job[:reference], check[:reference_requests]]].each do |branch, requests| %>
 #### <%= branch %>

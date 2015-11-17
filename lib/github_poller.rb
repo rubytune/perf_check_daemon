@@ -56,7 +56,7 @@ class GithubPoller
       scan_mentions(notification_time, pull_time, pull)
 
       api(pull['comments_url']).each do |comment|
-        comment_time = Time.parse(comment['updated_at'])
+        comment_time = Time.parse(comment['created_at'])
         scan_mentions(notification_time, comment_time, comment)
       end
 
@@ -64,7 +64,7 @@ class GithubPoller
         job_template[:pull_request_comments] = pull['review_comments_url']
         job_template[:pull_request_comment_id] = comment['id']
 
-        comment_time = Time.parse(comment['updated_at'])
+        comment_time = Time.parse(comment['created_at'])
         scan_mentions(notification_time, comment_time, comment)
       end
     end

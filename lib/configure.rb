@@ -38,6 +38,18 @@ def comment_template
 end
 
 def api(path, data={}, put: false, post: false)
+  page_info = api_page(path, data, put: put, post: post)
+
+  data = page_info.data
+  while page_info.next
+    page_info = api_page(page_info.next, data)
+    data.concat(page_info.data)
+  end
+
+  data
+end
+
+def api_page(path, data, put: false, post: false)
   path.sub!(/^\//, '')
   url = path.match(/^https?:/) ? path : "https://api.github.com/#{path}"
 
@@ -57,10 +69,23 @@ def api(path, data={}, put: false, post: false)
   api_log(path, resp)
 
   if resp.success? && resp.body
-    JSON.parse(resp.body)
+    link = api_parse_next_link(resp)
+    OpenStruct.new(data: JSON.parse(resp.body), next: link)
   elsif resp.success?
-    true
+    OpenStruct.new(data: true, next: nil)
   end
+end
+
+def api_parse_next_link(resp)
+  if header = resp.headers['link']
+    header.split(',').each do |link|
+      if link =~ /<(.+)>;\s*rel="(.+)"/ && $2 == 'next'
+        return $1
+      end
+    end
+  end
+
+  nil
 end
 
 def api_log(path, resp)

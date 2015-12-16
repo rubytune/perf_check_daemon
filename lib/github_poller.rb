@@ -33,6 +33,39 @@ class GithubPoller
     end
   end
 
+  def scan_pull_request(notification_time, id: nil, url: nil)
+    if url
+      pull = api(notification)
+    else
+      pull = api("repos/#{github.repo}/pulls/#{id}")
+    end
+
+    @job_template = {
+      pull_request: pull['url'],
+      pull_request_comments: pull['comments_url'],
+      branch: pull['head']['ref'],
+      reference: pull['base']['ref'],
+      sha: pull['head']['sha'],
+      reference_sha: pull['base']['sha']
+    }
+
+    pull_time = Time.parse(pull['created_at'])
+    scan_mentions(notification_time, pull_time, pull)
+
+    api(pull['comments_url']).each do |comment|
+      comment_time = Time.parse(comment['created_at'])
+      scan_mentions(notification_time, comment_time, comment)
+    end
+
+    api(pull['review_comments_url']).each do |comment|
+      job_template[:pull_request_comments] = pull['review_comments_url']
+      job_template[:pull_request_comment_id] = comment['id']
+
+      comment_time = Time.parse(comment['created_at'])
+      scan_mentions(notification_time, comment_time, comment)
+    end
+  end
+
   def poll
     max_notification_time = nil
 
@@ -41,32 +74,7 @@ class GithubPoller
       max_notification_time ||= notification_time
       max_notification_time = [max_notification_time, notification_time].max
 
-      pull = api(notification['subject']['url'])
-
-      @job_template = {
-        pull_request: pull['url'],
-        pull_request_comments: pull['comments_url'],
-        branch: pull['head']['ref'],
-        reference: pull['base']['ref'],
-        sha: pull['head']['sha'],
-        reference_sha: pull['base']['sha']
-      }
-
-      pull_time = Time.parse(pull['created_at'])
-      scan_mentions(notification_time, pull_time, pull)
-
-      api(pull['comments_url']).each do |comment|
-        comment_time = Time.parse(comment['created_at'])
-        scan_mentions(notification_time, comment_time, comment)
-      end
-
-      api(pull['review_comments_url']).each do |comment|
-        job_template[:pull_request_comments] = pull['review_comments_url']
-        job_template[:pull_request_comment_id] = comment['id']
-
-        comment_time = Time.parse(comment['created_at'])
-        scan_mentions(notification_time, comment_time, comment)
-      end
+      scan_pull_request(notification['subject']['url'])
     end
 
     max_notification_time

@@ -1,4 +1,6 @@
 
+require 'sqlite3'
+
 class GithubPoller
   attr_reader :github, :jobs, :job_template
 
@@ -14,13 +16,12 @@ class GithubPoller
   end
 
   def scan_mentions(notification_timestamp, timestamp, object)
+    return unless new_mention?(object)
+
+    job_template[:github_holder] = object
     each_mention(object['body']) do |args|
-      if timestamp + 3 < notification_timestamp
-        log_disregarded_mention(timestamp, notification_timestamp, object['html_url'])
-      else
-        job_template[:arguments] = args
-        jobs.push(job_template.dup)
-      end
+      job_template[:arguments] = args
+      jobs.push(job_template.dup)
     end
   end
 
@@ -80,7 +81,39 @@ class GithubPoller
     max_notification_time
   end
 
-  def log_disregarded_mention(t, nt, url)
-    logger.debug("Disregarding mention from #{t} (notification is #{nt}): #{url}")
+  def db
+    @db ||=
+      begin
+        dbfile = File.expand_path("../../db/notifications.sqlite3", __FILE__)
+        SQLite3::Database.new(dbfile).tap do |db|
+          db.execute <<-SQL
+            CREATE TABLE IF NOT EXISTS notifications (
+              github_url varchar(250),
+              arguments text,
+              timestamp datetime
+            );
+          SQL
+        end
+      end
+  end
+
+  def new_mention?(holder)
+    github_url = holder.fetch('url')
+    timestamp = holder.fetch('created_at')
+
+    sql, binds = "select count(*) from notifications where github_url = ?", [github_url]
+    logger.debug([sql, binds].inspect)
+    count = db.execute(sql, binds)[0][0]
+    count.zero?
+  end
+
+  def log_mention(holder, args)
+    github_url = holder.fetch('url')
+    timestamp = holder.fetch('created_at')
+
+    sql = "insert into notifications (github_url, arguments, timestamp) values (?, ?, ?)"
+    binds = github_url, args.strip, timestamp
+    logger.debug([sql, binds].inspect)
+    db.execute(sql, binds)
   end
 end

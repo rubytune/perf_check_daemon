@@ -1,1 +1,2 @@
 config/daemon.yml
+db/*.sqlite3

@@ -74,7 +74,7 @@ class GithubPoller
       max_notification_time ||= notification_time
       max_notification_time = [max_notification_time, notification_time].max
 
-      scan_pull_request(notification['subject']['url'])
+      scan_pull_request(url: notification['subject']['url'])
     end
 
     max_notification_time

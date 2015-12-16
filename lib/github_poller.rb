@@ -36,7 +36,7 @@ class GithubPoller
 
   def scan_pull_request(notification_time, id: nil, url: nil)
     if url
-      pull = api(notification)
+      pull = api(url)
     else
       pull = api("repos/#{github.repo}/pulls/#{id}")
     end

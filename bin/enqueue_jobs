@@ -12,7 +12,9 @@ max_notification_time = poller.poll
 
 poller.jobs.each do |job|
   logger.info("job: " + job.to_json)
+  mention = job.delete(:github_holder)
   Resque.enqueue(PerfCheckJob, job)
+  poller.log_mention(mention, job[:arguments])
 end
 
 if max_notification_time

@@ -14,7 +14,7 @@ poller = PerfCheckDaemon::GithubPoller.new(github)
 max_notification_time = poller.poll
 
 poller.jobs.each do |job|
-  logger.info("job: " + job.to_json)
+  app_logger.info("job: " + job.to_json)
   mention = job.delete(:github_holder)
   Resque.enqueue(PerfCheckDaemon::Job, job)
   poller.log_mention(mention, job[:arguments])

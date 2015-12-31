@@ -103,7 +103,7 @@ module PerfCheckDaemon
       timestamp = holder.fetch('created_at')
 
       sql, binds = "select count(*) from notifications where github_url = ?", [github_url]
-      logger.debug([sql, binds].inspect)
+      app_logger.debug([sql, binds].inspect)
       count = db.execute(sql, binds)[0][0]
       count.zero?
     end
@@ -114,7 +114,7 @@ module PerfCheckDaemon
 
       sql = "insert into notifications (github_url, arguments, timestamp) values (?, ?, ?)"
       binds = github_url, args.strip, timestamp
-      logger.debug([sql, binds].inspect)
+      app_logger.debug([sql, binds].inspect)
       db.execute(sql, binds)
     end
   end

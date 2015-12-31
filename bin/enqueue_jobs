@@ -1,10 +1,13 @@
 #!/usr/bin/env ruby
 
+lib = File.expand_path("../lib", __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+
 require 'time'
 
-require_relative "../lib/perf_check_daemon/configure"
-require_relative "../lib/perf_check_daemon/job"
-require_relative "../lib/perf_check_daemon/github_poller"
+require "perf_check_daemon/configure"
+require "perf_check_daemon/job"
+require "perf_check_daemon/github_poller"
 
 poller = PerfCheckDaemon::GithubPoller.new(github)
 

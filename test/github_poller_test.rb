@@ -5,7 +5,7 @@ require 'minitest/autorun'
 require 'ostruct'
 require 'logger'
 
-require_relative '../lib/github_poller'
+require_relative '../lib/perf_check_daemon/github_poller'
 
 $NOTIFICATION = {
   'reason' => 'mention',
@@ -24,14 +24,16 @@ $PULL_REQUEST = {
 }
 
 $PR_COMMENT = {
-  'updated_at' => '2014-11-07T22:01:45Z',
-  'body' => ''
+  'created_at' => '2014-11-07T22:01:45Z',
+  'body' => '',
+  'url' => 'pull_request_comment_url'
 }
 
 $DIFF_COMMENT = {
   'id' => 123,
-  'updated_at' => '2014-11-07T22:01:45Z',
-  'body' => ''
+  'created_at' => '2014-11-07T22:01:45Z',
+  'body' => '',
+  'url' => 'pull_request_diff_comment_url'
 }
 
 def api(path, *args)
@@ -57,12 +59,32 @@ def logger(*args)
   Logger.new('/dev/null')
 end
 
+module PerfCheckDaemon
+  class GithubPoller
+    def db
+      @db ||=
+        begin
+          dbfile = File.expand_path("../../db/notifications-test.sqlite3", __FILE__)
+          SQLite3::Database.new(dbfile).tap do |db|
+            db.execute <<-SQL
+            CREATE TABLE IF NOT EXISTS notifications (
+              github_url varchar(250),
+              arguments text,
+              timestamp datetime
+            );
+          SQL
+          end
+        end
+    end
+  end
+end
+
 class GithubPollerTest < MiniTest::Test
   attr_accessor :poller, :github
 
   def setup
     self.github = OpenStruct.new(repo: 'github_poller_test', user: 'PerfCheckDaemon')
-    self.poller = GithubPoller.new(github)
+    self.poller = PerfCheckDaemon::GithubPoller.new(github)
   end
 
   def test_pull_request_mention
@@ -86,12 +108,6 @@ class GithubPollerTest < MiniTest::Test
     assert_equal $PULL_REQUEST['base']['sha'], job.delete(:reference_sha)
     assert_equal '-n5 /opening_mention', job.delete(:arguments)
 
-    $PULL_REQUEST['created_at'] = (Time.parse($NOTIFICATION['updated_at'])-3600).iso8601
-    poller.poll
-
-    assert_equal 0, poller.jobs.size
-
-    $PULL_REQUEST['created_at'] = $NOTIFICATION['updated_at']
     $PULL_REQUEST['body'] = ''
   end
 
@@ -116,13 +132,6 @@ class GithubPollerTest < MiniTest::Test
     assert_equal $PULL_REQUEST['base']['sha'], job.delete(:reference_sha)
     assert_equal '-n5 /comment_mention', job.delete(:arguments)
 
-    $PR_COMMENT['updated_at'] = (Time.parse($NOTIFICATION['updated_at'])-3600).iso8601
-    poller.poll
-
-    assert_equal 0, poller.jobs.size
-
-    $PR_COMMENT['updated_at'] = $NOTIFICATION['updated_at']
-
     $PR_COMMENT['body'] = ''
   end
 
@@ -146,13 +155,6 @@ class GithubPollerTest < MiniTest::Test
     assert_equal $PULL_REQUEST['head']['sha'], job.delete(:sha)
     assert_equal $PULL_REQUEST['base']['sha'], job.delete(:reference_sha)
     assert_equal '-n5 /diff_mention', job.delete(:arguments)
-
-    $DIFF_COMMENT['updated_at'] = (Time.parse($NOTIFICATION['updated_at'])-3600).iso8601
-    poller.poll
-
-    assert_equal 0, poller.jobs.size
-
-    $DIFF_COMMENT['updated_at'] = $NOTIFICATION['updated_at']
 
     $DIFF_COMMENT['body'] = ''
   end

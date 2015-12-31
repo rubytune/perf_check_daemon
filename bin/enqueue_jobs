@@ -2,18 +2,18 @@
 
 require 'time'
 
-require_relative "../lib/configure"
-require_relative "../lib/perf_check_job"
-require_relative "../lib/github_poller"
+require_relative "../lib/perf_check_daemon/configure"
+require_relative "../lib/perf_check_daemon/job"
+require_relative "../lib/perf_check_daemon/github_poller"
 
-poller = GithubPoller.new(github)
+poller = PerfCheckDaemon::GithubPoller.new(github)
 
 max_notification_time = poller.poll
 
 poller.jobs.each do |job|
   logger.info("job: " + job.to_json)
   mention = job.delete(:github_holder)
-  Resque.enqueue(PerfCheckJob, job)
+  Resque.enqueue(PerfCheckDaemon::Job, job)
   poller.log_mention(mention, job[:arguments])
 end
 

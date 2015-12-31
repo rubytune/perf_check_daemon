@@ -19,8 +19,12 @@ class Hash
 end
 
 def config
-  root = File.expand_path("#{File.dirname(__FILE__)}/..")
-  YAML.load_file("#{root}/config/daemon.yml").to_ostruct
+  root = File.expand_path("#{File.dirname(__FILE__)}/../..")
+  if ENV['RACK_ENV'] == 'test'
+    YAML.load_file("#{root}/config/daemon.yml.example").to_ostruct
+  else
+    YAML.load_file("#{root}/config/daemon.yml").to_ostruct
+  end
 end
 
 def github
@@ -28,12 +32,12 @@ def github
 end
 
 def gist_template
-  root = File.expand_path("#{File.dirname(__FILE__)}/..")
+  root = File.expand_path("#{File.dirname(__FILE__)}/../..")
   "#{root}/config/gist.erb"
 end
 
 def comment_template
-  root = File.expand_path("#{File.dirname(__FILE__)}/..")
+  root = File.expand_path("#{File.dirname(__FILE__)}/../..")
   "#{root}/config/comment.erb"
 end
 
@@ -96,12 +100,12 @@ def api_log(path, resp)
   severity = resp.success? ? Logger::DEBUG : Logger::WARN
 
   tail = "(#{used}/#{limit}): /#{path}"
-  logger.log(severity, "GITHUB #{resp.code} #{tail}")
-  logger.warn(resp.body) unless resp.success?
+  app_logger.log(severity, "GITHUB #{resp.code} #{tail}")
+  app_logger.warn(resp.body) unless resp.success?
 end
 
-def logger
-  @logger ||= Logger.new(STDERR)
+def app_logger
+  @app_logger ||= Logger.new(STDERR)
 end
 
 config.redis = {
@@ -109,5 +113,5 @@ config.redis = {
   port: 6379
 }.merge((config.redis || {}).to_h).to_ostruct
 
-
-Resque.redis = Redis.new(config.redis.to_h)
+Resque.inline = true
+# Resque.redis = Redis.new(config.redis.to_h)

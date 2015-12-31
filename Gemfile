@@ -6,4 +6,7 @@ gem 'minitest'
 
 gem 'sqlite3'
 
+gem 'sinatra'
+gem 'rack-test'
+
 gem 'rake'

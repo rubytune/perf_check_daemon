@@ -1,11 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'minitest/autorun'
-
-require 'ostruct'
-require 'shellwords'
-
-require_relative '../lib/perf_check_job'
+require File.expand_path '../test_helper.rb', __FILE__
 
 def config
   $APP_CONFIG ||= OpenStruct.new(
@@ -14,7 +9,7 @@ def config
   )
 end
 
-class PerfCheckJobTest < MiniTest::Test
+class PerfCheckDaemonJobTest < MiniTest::Test
   attr_accessor :job, :perf_check_output
 
   def setup
@@ -37,8 +32,8 @@ class PerfCheckJobTest < MiniTest::Test
 
   def test_command_arguments_are_shell_escaped
     command = nil
-    PerfCheckJob.stub(:capture, ->(x){ command = x; perf_check_output }) do
-      PerfCheckJob.stub(:post_results, nil) do
+    PerfCheckDaemon::Job.stub(:capture, ->(x){ command = x; perf_check_output }) do
+      PerfCheckDaemon::Job.stub(:post_results, nil) do
         job['branch'] = '$escape_branch_name'
         config.defaults << '$escape_default_arguments'
         config.app.path << '$escape_application_path'
@@ -46,7 +41,7 @@ class PerfCheckJobTest < MiniTest::Test
         funny_args = ["$(needs_escaping)", ">abc"]
         job['arguments'] << " #{funny_args.join(' ')}"
 
-        PerfCheckJob.perform(job)
+        PerfCheckDaemon::Job.perform(job)
 
         assert_includes(command, Shellwords.escape(job['branch']))
         assert_includes(command, Shellwords.escape(config.defaults))

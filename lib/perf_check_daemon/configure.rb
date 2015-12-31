@@ -113,5 +113,5 @@ config.redis = {
   port: 6379
 }.merge((config.redis || {}).to_h).to_ostruct
 
-Resque.inline = true
-# Resque.redis = Redis.new(config.redis.to_h)
+# Resque.inline = true
+Resque.redis = Redis.new(config.redis.to_h)

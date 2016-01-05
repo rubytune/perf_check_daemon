@@ -13,6 +13,10 @@ module PerfCheckDaemon
 
     attr_accessor :payload
 
+    configure :production, :development do
+      enable :logging
+    end
+
     get "/" do
       "Hello World!"
     end

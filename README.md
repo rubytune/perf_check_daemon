@@ -1,6 +1,29 @@
 # perf_check_daemon
 Watches pull requests on your github repository and comments on how the changes will affect your app's performance (using [perf_check](https://github.com/rubytune/perf_check)).
 
+### Usage
+Call out to your user in a pull request comment (in the body, review, or diff), giving the urls to test, and shortly after you'll get a reply summarizing the performance differences between the branches:
+
+![](https://cloud.githubusercontent.com/assets/6469642/13340018/cb4dd9c2-dbe1-11e5-98b7-8501b2512c70.png)
+
+Any arguments you pass in will be fed directly into perf_check. For example, this comment would run 3 different performance checks each with custom options:
+
+```
+Hit the /posts action 50 times:
+
+@PerfCheckUser -n50 /posts
+
+Test against /posts performance on a specific branch:
+
+@PerfCheckUser -r this_other_branch /posts
+
+Consider redirects as failures (default):
+
+@PerfCheckUser --302-failure /posts
+```
+
+Three separate comments will be posted in reply. Please see the [perf_check readme](https://github.com/rubytune/perf_check) for information on its behavior and options.
+
 ### Setup
 #### Configuration
 Copy config/daemon.yml.example to config/daemon.yml, and fill in the appropriate values.

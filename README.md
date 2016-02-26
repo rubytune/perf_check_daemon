@@ -1,5 +1,5 @@
 # perf_check_daemon
-Watches pull requests on your github repository and comments on how the changes will affect your app's performance (using [perf_check](https://github.com/rubytune/perf_check)).
+Watches pull requests on your github repository and comments on how the changes will affect your app's performance using [perf_check](https://github.com/rubytune/perf_check).
 
 ### Usage
 Call out to your user in a pull request comment (in the body, review, or diff), giving the urls to test, and shortly after you'll get a reply summarizing the performance differences between the branches:

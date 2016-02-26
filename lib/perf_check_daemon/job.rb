@@ -41,6 +41,7 @@ module PerfCheckDaemon
         reference: job.fetch('reference'),
         branch_sha: job.fetch('sha'),
         reference_sha: job.fetch('reference_sha'),
+        arguments: "#{defaults} #{args}",
         pull_request: job.fetch('pull_request'),
         pull_request_comments: job.fetch('pull_request_comments'),
         pull_request_comment_id: job['pull_request_comment_id']
@@ -134,13 +135,16 @@ module PerfCheckDaemon
       end
 
       def latency_change(check)
+        ref = job[:arguments].match(/(?<!-)((-\w*?r\s*)|--reference\s+)([\w\/]+)/)
+        ref = ref ? ref[3] : 'master'
+
         threshold = config.limits.change_factor
         if check[:speedup_factor] < 1 - threshold
-          sprintf('%.1fx slower than %s', 1/check[:speedup_factor], job[:reference])
+          sprintf('%.1fx slower than %s', 1/check[:speedup_factor], ref)
         elsif check[:speedup_factor] > 1 + threshold
-          sprintf('%.1fx faster than %s', check[:speedup_factor].abs, job[:reference])
+          sprintf('%.1fx faster than %s', check[:speedup_factor].abs, ref)
         else
-          "about the same as #{job[:reference]}"
+          "about the same as #{ref}"
         end << sprintf(' (%dms vs %dms)', check[:latency], check[:reference_latency])
       end
 

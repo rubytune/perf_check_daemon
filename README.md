@@ -25,7 +25,13 @@ Consider redirects as failures (default):
 Three separate comments will be posted in reply. Please see the [perf_check readme](https://github.com/rubytune/perf_check) for information on its behavior and options.
 
 ### Setup
-#### Configuration
+
+#### Prerequisites 
+
+1. Redis
+2. To receive github webhook you'll need to be reachable at an external address/port combination.
+
+#### Config
 Copy config/daemon.yml.example to config/daemon.yml, and fill in the appropriate values.
 
 daemon.yml configuration:
@@ -42,11 +48,46 @@ github.hook_secret | Secret for github web hooks.
 github.token | Github api token. Should be cleared for `repo`, `gist`, `notifications`, and `user` scopes.
 redis.password | Redis password (optional).
 
+### Webhooks
+
 Add two web hooks to your github repository:
+
   * Aim `PullRequest` events at `http://example.com/pull_request`
   * Aim `IssueComment` and `PullRequestReviewComment` events at `http://example.com/comment`
+  
+You'll also need the github token mentioned in the config above.
+  
 
-#### Running the app
+### Running the app
+
 There are two components you'll need to daemonize:
+
   * The [sinatra app](https://github.com/wioux/perf_check_daemon/blob/master/lib/perf_check_daemon/app.rb) which listens for github web hooks
-  * The [resque worker](https://github.com/wioux/perf_check_daemon/blob/master/lib/perf_check_daemon/job.rb) which will do the actual perf checking and post the results back to github
+  * The [resque worker](https://github.com/wioux/perf_check_daemon/blob/master/lib/perf_check_daemon/job.rb) which will do the actual perf checking and post the results back to github. 
+  
+To submit a test job directly to resque you can boot up resque with
+
+`bundle exec rake resque:work QUEUE=perf_check_jobs`
+
+You can boot into irb to submit a job.
+
+Here's an example job from github.com/sudara/alonetone
+
+```
+job = {
+  'arguments' => '/',
+  'branch' => 'perf_check_test',
+  'reference' => 'master',
+  'sha' => 'd737e72513829611113d867f56334f5c4332bec4',
+  'reference_sha' => 'abc',
+  'pull_request' => 'https://github.com/sudara/alonetone/pull/129',
+  'pull_request_comments' => 'https://github.com/sudara/alonetone/pull/129'
+}
+```
+
+To submit this job, run
+
+```
+Resque.enqueue(PerfCheckDaemon::Job, job)
+```
+

@@ -10,3 +10,5 @@ gem 'sinatra'
 gem 'rack-test'
 
 gem 'rake'
+
+gem 'perf_check'

@@ -15,8 +15,8 @@ module PerfCheckDaemon
       perf_check = PerfCheck.new(config.app.path)
 
       with_clean_env do
-        perf_check.load_config
         prepare_app(job)
+        perf_check.load_config
 
         defaults = config.defaults || ''
         job['arguments'] = "#{defaults} #{job.fetch('arguments').strip}".strip

@@ -1,21 +1,21 @@
 # [<%= job[:branch] %> vs <%= job[:reference] %>](<%= job[:pull_request] %>)
 
-<% job[:checks].each do |check| %>
-## <%= check[:route] %>
+<% perf_check.test_cases.each do |test_case| %>
+## <%= test_case.resource %>
                         | runtime (ms) | queries
 ------------------------|--------------|----------------
-<%= job[:branch] %>     |<%= sprintf('%.1f', check[:latency]) %>|<%= check[:query_count] %>
+<%= job[:branch] %>     |<%= sprintf('%.1f', test_case.this_latency) %>|<%= test_case.this_query_count %>
 
-<%= job[:reference] %>  |<%= sprintf('%.1f', check[:reference_latency]) %>|<%= check[:reference_query_count] %>
+<%= job[:reference] %>  |<%= sprintf('%.1f', test_case.reference_latency) %>|<%= test_case.reference_query_count %>
 
-**Δ**                   |**<%= sprintf('%+.1f', check[:latency_difference]) %>**
+**Δ**                   |**<%= sprintf('%+.1f', test_case.latency_difference) %>**
 
-<% [[job[:branch], check[:requests]], [job[:reference], check[:reference_requests]]].each do |branch, requests| %>
+<% [[job[:branch], test_case.this_profiles], [job[:reference], test_case.reference_profiles]].each do |branch, profiles| %>
 #### <%= branch %>
 \#  | runtime (ms) | status | queries | final rss (MB)
 ----|--------------|--------|---------|-----------------
-<% requests.each_with_index do |r, i| %>
-<%= i %> | <%= sprintf('%.1f', r[:latency]) %> | <%= r[:response_code] %> | <%= r[:query_count] %> | <%= sprintf('%.1f', r[:server_memory]) %>
+<% profiles.each_with_index do |p, i| %>
+<%= i %> | <%= sprintf('%.1f', p.latency) %> | <%= p.response_code %> | <%= p.query_count %> | <%= sprintf('%.1f', p.server_memory) %>
 
 <% end %>
 

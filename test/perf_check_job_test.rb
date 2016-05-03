@@ -29,28 +29,4 @@ class PerfCheckDaemonJobTest < MiniTest::Test
       ]
     )
   end
-
-  def test_command_arguments_are_shell_escaped
-    command = nil
-    PerfCheckDaemon::Job.stub(:capture, ->(x){ command = x; perf_check_output }) do
-      PerfCheckDaemon::Job.stub(:post_results, nil) do
-        job['branch'] = '$escape_branch_name'
-        config.defaults << '$escape_default_arguments'
-        config.app.path << '$escape_application_path'
-
-        funny_args = ["$(needs_escaping)", ">abc"]
-        job['arguments'] << " #{funny_args.join(' ')}"
-
-        PerfCheckDaemon::Job.perform(job)
-
-        assert_includes(command, Shellwords.escape(job['branch']))
-        assert_includes(command, Shellwords.escape(config.defaults))
-        assert_includes(command, Shellwords.escape(config.app.path))
-        funny_args.each{ |arg| assert_includes(command, Shellwords.escape(arg)) }
-
-        config.defaults.sub!(/\$escape_default_arguments$/, '')
-        config.app.path.sub!(/\$escape_application_path$/, '')
-      end
-    end
-  end
 end

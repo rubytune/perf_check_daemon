@@ -3,6 +3,8 @@ require 'erb'
 require 'shellwords'
 require 'json'
 
+require 'perf_check'
+
 require "perf_check_daemon/configure"
 
 module PerfCheckDaemon
@@ -10,165 +12,199 @@ module PerfCheckDaemon
     @queue = :perf_check_jobs
 
     def self.perform(job)
-      args = job.fetch('arguments').strip
-      defaults = config.defaults || ''
+      perf_check = PerfCheck.new(config.app.path)
 
-      app_path = Shellwords.escape(config.app.path)
-      args = Shellwords.split(args).map{ |p| Shellwords.escape(p) }.join(' ')
-      defaults = Shellwords.split(defaults).map{ |p| Shellwords.escape(p) }.join(' ')
-      branch = Shellwords.escape(job.fetch('branch'))
+      with_clean_env do
+        perf_check.load_config
+        prepare_app(job)
 
-      git_ssh = ENV['GIT_SSH']
-      perf_check_output = Bundler.with_clean_env do
-        ENV['GIT_SSH'] = git_ssh
-        output = capture("cd #{app_path} &&
-                        git remote prune origin 1>&2 &&
-                        git fetch --all 1>&2 &&
-                        git checkout master 1>&2 &&
-                        git submodule update 1>&2 &&
-                        git pull 1>&2 &&
-                        git checkout #{branch} 1>&2 &&
-                        git submodule update 1>&2 &&
-                        git pull 1>&2 &&
-                        git submodule update 1>&2 &&
-                        bundle 1>&2 &&
-                        bundle exec perf_check #{defaults} -j #{args}")
-        JSON.parse(output)
+        defaults = config.defaults || ''
+        job['arguments'] = "#{defaults} #{job.fetch('arguments').strip}".strip
+
+        args = Shellwords.shellsplit(job['arguments'])
+        perf_check.option_parser.parse(args).each do |route|
+          perf_check.add_test_case(route.strip)
+        end
+        perf_check.run
       end
 
-      job = {
-        branch: job.fetch('branch'),
-        reference: job.fetch('reference'),
-        branch_sha: job.fetch('sha'),
-        reference_sha: job.fetch('reference_sha'),
-        arguments: "#{defaults} #{args}",
-        pull_request: job.fetch('pull_request'),
-        pull_request_comments: job.fetch('pull_request_comments'),
-        pull_request_comment_id: job['pull_request_comment_id']
-      }
-
-      post_results(job, perf_check_output)
+      post_results(job, perf_check)
+    rescue OptionParser::InvalidOption => e
+      post_error(job, e)
+    rescue PerfCheck::Exception => e
+      post_error(job, e)
     end
 
-    def self.post_results(job, perf_check_output)
-      job[:checks] = perf_check_output.map do |check|
-        {
-          route: check.fetch('route'),
-          latency: check.fetch('latency'),
-          reference_latency: check.fetch('reference_latency'),
-          latency_difference: check.fetch('latency_difference'),
-          speedup_factor: check.fetch('speedup_factor'),
-          query_count: check.fetch('query_count'),
-          reference_query_count: check.fetch('reference_query_count')
-        }.merge(
-          requests: check.fetch('requests').map do |r|
-            {
-              latency: r.fetch('latency'),
-              response_code: r.fetch('response_code'),
-              query_count: r.fetch('query_count'),
-              server_memory: r.fetch('server_memory')
-            }
-          end,
-          reference_requests: check.fetch('reference_requests').map do |r|
-            {
-              latency: r.fetch('latency'),
-              response_code: r.fetch('response_code'),
-              query_count: r.fetch('query_count'),
-              server_memory: r.fetch('server_memory')
-            }
-          end
-        )
-      end
-
-      gist_name = "#{job[:branch]}-#{job[:branch_sha][0,7]}" <<
-                  "-#{job[:reference]}-#{job[:reference_sha][0,7]}.md"
+    def self.post_results(job, perf_check)
+      gist_name = "#{job['branch']}-#{job['sha'][0,7]}" <<
+                  "-#{job['reference']}-#{job['reference_sha'][0,7]}.md"
       gist_name.gsub!('/', '_')
 
-      gist = { gist_name => { content: gist_content(job) } }
+      gist = { gist_name => { content: gist_content(job, perf_check) } }
       gist = api "/gists", { public: false, files: gist }, post: true
 
-      comment = { body: comment_content(job, gist.fetch('html_url')) }
-      if job.key?(:pull_request_comment_id)
-        comment[:in_reply_to] = job[:pull_request_comment_id]
+      comment = { body: comment_content(job, perf_check, gist.fetch('html_url')) }
+
+      # Remove this when poller is deleted
+      if job.key?('pull_request_comment_id')
+        comment[:in_reply_to] = job['pull_request_comment_id']
       end
-      api job.fetch(:pull_request_comments), comment, post: true
+
+      api job.fetch('pull_request_comments'), comment, post: true
 
       true
     end
 
-    def self.gist_content(job)
-      b = GistHelper.new(job).instance_eval{ binding }
+    def self.post_error(job, error)
+      message = "There was an error running `perf_check #{job['arguments'].strip}`:"
+      message << "\n\n    #{error.class}: "
+      error.message.lines.each{ |line| message << line << "\n    " }
+      api job.fetch('pull_request_comments'), { body: message.strip }, post: true
+    end
+
+    def self.gist_content(job, perf_check)
+      b = GistHelper.new(job, perf_check).instance_eval{ binding }
       erb = ERB.new(File.read(gist_template), nil, '<>')
       erb.filename = gist_template
       erb.result(b)
     end
 
-    def self.comment_content(job, gist_url)
-      b = CommentHelper.new(job, gist_url).instance_eval{ binding }
+    def self.comment_content(job, perf_check, gist_url)
+      b = CommentHelper.new(job, perf_check, gist_url).instance_eval{ binding }
       erb = ERB.new(File.read(comment_template), nil, '-')
       erb.filename = comment_template
       erb.result(b)
     end
 
+    def self.with_clean_env
+      git_ssh = ENV['GIT_SSH']
+      Bundler.with_clean_env do
+        ENV['GIT_SSH'] = git_ssh
+        yield
+      end
+    end
+
+    def self.prepare_app(job)
+      app_path = Shellwords.escape(config.app.path)
+      branch = Shellwords.escape(job.fetch('branch'))
+      capture("cd #{app_path} &&
+               git remote prune origin 1>&2 &&
+               git fetch --all 1>&2 &&
+               git checkout master 1>&2 &&
+               git submodule update 1>&2 &&
+               git pull 1>&2 &&
+               git checkout #{branch} 1>&2 &&
+               git submodule update 1>&2 &&
+               git pull 1>&2 &&
+               git submodule update 1>&2 &&
+               bundle 1>&2")
+    end
+
     def self.capture(command)
+      warn(command)
       `#{command}`
     end
 
     class GistHelper
-      attr_reader :job, :gist_url
+      attr_reader :job, :perf_check, :gist_url
 
-      def initialize(job)
-        @job = job
+      def initialize(job, perf_check)
+        @job, @perf_check = job, perf_check
       end
     end
 
     class CommentHelper
-      attr_reader :job, :gist_url
+      attr_reader :job, :perf_check, :gist_url
 
-      def initialize(job, gist_url)
-        @job, @gist_url = job, gist_url
+      def initialize(job, perf_check, gist_url)
+        @job, @perf_check, @gist_url = job, perf_check, gist_url
       end
 
-      def latency_check(check)
+      def latency_check(test_case)
         threshold = config.limits.change_factor
-        check[:speedup_factor] >= (1 - threshold) ? ':white_check_mark:' : ':x:'
+        test_case.speedup_factor >= (1 - threshold) ? ':white_check_mark:' : ':x:'
       end
 
-      def latency_change(check)
-        ref = job[:arguments].match(/(?<!-)((-\w*?r\s*)|--reference\s+)([\w\/]+)/)
-        ref = ref ? ref[3] : 'master'
-
+      def latency_change(test_case)
+        ref = perf_check.options.reference
         threshold = config.limits.change_factor
-        if check[:speedup_factor] < 1 - threshold
-          sprintf('%.1fx slower than %s', 1/check[:speedup_factor], ref)
-        elsif check[:speedup_factor] > 1 + threshold
-          sprintf('%.1fx faster than %s', check[:speedup_factor].abs, ref)
+        if test_case.speedup_factor < 1 - threshold
+          sprintf('%.1fx slower than %s', 1/test_case.speedup_factor, ref)
+        elsif test_case.speedup_factor > 1 + threshold
+          sprintf('%.1fx faster than %s', test_case.speedup_factor.abs, ref)
         else
           "about the same as #{ref}"
-        end << sprintf(' (%dms vs %dms)', check[:latency], check[:reference_latency])
+        end + sprintf(' (%dms vs %dms)', test_case.this_latency, test_case.reference_latency)
       end
 
-      def query_check_and_change(check)
+      def query_check_and_change(test_case)
         l = config.limits.queries
-        if check[:query_count] < check[:reference_query_count] && check[:reference_query_count] >= l
-          ":white_check_mark: Reduced AR queries from #{check[:reference_query_count]} to #{check[:query_count]}!\n"
-        elsif check[:query_count] > check[:reference_query_count] && check[:query_count] >= l
-          ":x: Increased AR queries from #{check[:reference_query_count]} to #{check[:query_count]}!\n"
-        elsif check[:query_count] == check[:reference_query_count] && check[:reference_query_count] >= l
-          ":warning: #{check[:query_count]} AR queries were made\n"
+        if test_case.this_query_count < test_case.reference_query_count && test_case.reference_query_count >= l
+          ":white_check_mark: Reduced AR queries from #{test_case.reference_query_count} to #{test_case.this_query_count}!\n"
+        elsif test_case.this_query_count > test_case.reference_query_count && test_case.this_query_count >= l
+          ":x: Increased AR queries from #{test_case.reference_query_count} to #{test_case.this_query_count}!\n"
+        elsif test_case.this_query_count == test_case.reference_query_count && test_case.reference_query_count >= l
+          ":warning: #{test_case.this_query_count} AR queries were made\n"
         end
       end
 
-      def absolute_latency_check(check)
-        if check[:latency] > config.limits.latency
-          sprintf(":warning: Takes over %.1f seconds", config.limits.latency.to_f / 1000)
+      def absolute_latency_check(test_case)
+        limit = config.limits.latency
+        if test_case.this_latency > limit
+          sprintf(":warning: Takes over %.1f seconds", limit.to_f / 1000)
         end
       end
 
-      def http_errors(check)
-        statuses = check[:requests].map{ |r| r[:response_code] }
-        statuses += check[:reference_requests].map{ |r| r[:response_code] }
+      def backtrace_dump(test_case)
+        this_trace = test_case.this_profiles.map(&:backtrace).compact.first
+        reference_trace = test_case.reference_profiles.map(&:backtrace).compact.first
+
+        message = ''
+        if this_trace
+          gist = backtrace_url(job['branch'], this_trace)
+          message = ":mag: [Backtrace captured](#{gist}) (this branch)\n\n"
+        end
+
+        if reference_trace
+          gist = backtrace_url(job['reference'], reference_trace)
+          message << ":mag: [Backtrace captured](#{gist}) (#{job['reference']})"
+        end
+
+        message
+      end
+
+      def http_errors(test_case)
+        statuses = test_case.this_profiles.map{ |p| p.response_code }
+        statuses += test_case.reference_profiles.map{ |p| p.response_code }
         statuses.uniq.reject{ |code| (200...400).include?(code) }
+      end
+
+      private
+
+      def backtrace_url(branch, trace)
+        gist_name = "#{branch}-backtrace.md"
+        gist_name.gsub!('/', '_')
+
+        content = "### #{trace[0]}\n\n"
+        content << "file | method\n"
+        content << "-----|-------\n"
+        trace[1..-1].grep(/^#{config.app.path}\//).each do |line|
+          line = line.sub(/^#{config.app.path}\/(.+):(\d+):in/) do |l|
+            file = l.match(/^#{config.app.path}\/(.+):\d+:in/)[1]
+            line = l.match(/^#{config.app.path}\/.+:(\d+):in/)[1]
+            url = "https://www.github.com/#{config.github.repo}/"
+            url << "blob/#{branch}/#{file}#L#{line}"
+            "[#{file}:#{line}](#{url}):in"
+          end
+
+          file, method = line.split(/:in /, 2)
+          content << "#{file} | #{method}\n"
+        end
+
+        gist = { gist_name => { content: content } }
+        gist = api "/gists", { public: false, files: gist }, post: true
+
+        gist.fetch('html_url')
       end
     end
   end

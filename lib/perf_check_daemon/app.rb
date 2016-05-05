@@ -44,7 +44,7 @@ module PerfCheckDaemon
 
       comment = payload.fetch('comment')
 
-      if pull
+      if pull && payload.fetch('action') == 'created'
         jobs = GithubComment.extract_jobs(pull, comment)
         jobs.each{ |job| Resque.enqueue(PerfCheckDaemon::Job, job) }
       end

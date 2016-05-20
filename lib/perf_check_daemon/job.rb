@@ -45,11 +45,6 @@ module PerfCheckDaemon
 
       comment = { body: comment_content(job, perf_check, gist.fetch('html_url')) }
 
-      # Remove this when poller is deleted
-      if job.key?('pull_request_comment_id')
-        comment[:in_reply_to] = job['pull_request_comment_id']
-      end
-
       api job.fetch('pull_request_comments'), comment, post: true
 
       true

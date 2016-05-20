@@ -69,6 +69,7 @@ class AppTest < MiniTest::Unit::TestCase
     enqueued_jobs = []
     Resque.stub :enqueue, ->(*args){ enqueued_jobs << args } do
       payload[:comment] = { }
+      payload[:action] = "created"
 
       # When there is no mention, no jobs are enqueued
       payload[:comment][:body] = '...'
@@ -79,6 +80,11 @@ class AppTest < MiniTest::Unit::TestCase
       payload[:comment][:body] = [mention, mention].join("\n")
       post "/comment", payload.to_json
       assert_equal 2, enqueued_jobs.size
+
+      enqueued_jobs.clear
+      payload[:action] = "updated"
+      post "/comment", payload.to_json
+      assert_equal 0, enqueued_jobs.size
     end
   end
 
@@ -89,6 +95,8 @@ class AppTest < MiniTest::Unit::TestCase
       payload[:comment] = {}
 
       app.stub :api, ->(*_){ JSON.parse(payload[:issue].to_json) } do
+        payload[:action] = "created"
+
         # When the issue is not a pull request, no jobs are enqueued
         payload[:comment][:body] = [mention, mention].join("\n")
         post "/comment", payload.to_json
@@ -100,6 +108,11 @@ class AppTest < MiniTest::Unit::TestCase
         assert_equal 2, enqueued_jobs.size
         enqueued_jobs.clear
 
+        payload[:action] = "updated"
+        post "/comment", payload.to_json
+        assert_equal 0, enqueued_jobs.size
+
+        payload[:action] = "created"
         payload[:comment][:body] = '...'
         post "/comment", payload.to_json
         assert_equal 0, enqueued_jobs.size

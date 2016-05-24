@@ -97,12 +97,12 @@ class AppTest < MiniTest::Unit::TestCase
       app.stub :api, ->(*_){ JSON.parse(payload[:issue].to_json) } do
         payload[:action] = "created"
 
-        # When the issue is not a pull request, no jobs are enqueued
+        # A job is enqueued for each mention
         payload[:comment][:body] = [mention, mention].join("\n")
         post "/comment", payload.to_json
-        assert_equal 0, enqueued_jobs.size
+        assert_equal 2, enqueued_jobs.size
+        enqueued_jobs.clear
 
-        # When the issue is a pull request, a job is enqueued for each mention
         payload[:issue][:pull_request] = { url: '...' }
         post "/comment", payload.to_json
         assert_equal 2, enqueued_jobs.size

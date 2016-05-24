@@ -47,6 +47,13 @@ module PerfCheckDaemon
       if pull && payload.fetch('action') == 'created'
         jobs = GithubComment.extract_jobs(pull, comment)
         jobs.each{ |job| Resque.enqueue(PerfCheckDaemon::Job, job) }
+      elsif !pull
+        issue = payload["issue"].merge(
+          "head": { "ref": "master", "sha": "master" },
+          "base": { "ref": "master", "sha": "master" }
+        )
+        jobs = GithubComment.extract_jobs(issue, comment)
+        jobs.each{ |job| Resque.enqueue(PerfCheckDaemon::Job, job) }
       end
 
       "Ok"

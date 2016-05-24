@@ -11,7 +11,7 @@ GEM
     mono_logger (1.1.0)
     multi_json (1.11.2)
     multi_xml (0.5.5)
-    perf_check (0.5.5)
+    perf_check (0.7.0)
       colorize (= 0.7.3)
       diffy (= 3.0.5)
     rack (1.6.4)

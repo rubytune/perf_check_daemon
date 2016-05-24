@@ -36,11 +36,6 @@ def gist_template
   "#{root}/config/gist.erb"
 end
 
-def comment_template
-  root = File.expand_path("#{File.dirname(__FILE__)}/../..")
-  "#{root}/config/comment.erb"
-end
-
 def api(path, data={}, put: false, post: false)
   page_info = api_page(path, data, put: put, post: post)
 

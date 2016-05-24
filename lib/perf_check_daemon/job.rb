@@ -65,10 +65,8 @@ module PerfCheckDaemon
     end
 
     def self.comment_content(job, perf_check, gist_url)
-      b = CommentHelper.new(job, perf_check, gist_url).instance_eval{ binding }
-      erb = ERB.new(File.read(comment_template), nil, '-')
-      erb.filename = comment_template
-      erb.result(b)
+      h = CommentHelper.new(job, perf_check, gist_url)
+      h.comment
     end
 
     def self.with_clean_env
@@ -115,6 +113,43 @@ module PerfCheckDaemon
         @job, @perf_check, @gist_url = job, perf_check, gist_url
       end
 
+      def comment
+        perf_check.options.diff ? diff_comment : regular_comment
+      end
+
+      def regular_comment
+        results = perf_check.test_cases.map do |test_case|
+          if http_errors(test_case).empty?
+            ["**#{ test_case.resource }**",
+             "#{latency_check(test_case)} #{latency_change(test_case)}",
+             query_check_and_change(test_case),
+             absolute_latency_check(test_case),
+             response_diff_check(test_case)].grep(/\S/).join("\n")
+          else
+            ["**#{ test_case.resource }**",
+             ":x: Encountered HTTP errors (#{ http_errors(test_case).join(', ') })",
+             backtrace_dump(test_case)].grep(/\S/).join("\n")
+          end
+        end
+
+        results.join("\n\n") << "\n\n[See more details](#{ gist_url })."
+      end
+
+      def diff_comment
+        results = perf_check.test_cases.map do |test_case|
+          if http_errors(test_case).empty?
+            ["**#{ test_case.resource }**",
+             response_diff_check(test_case)].grep(/\S/).join("\n")
+          else
+            ["**#{ test_case.resource }**",
+             ":x: Encountered HTTP errors (#{ http_errors(test_case).join(', ') })",
+             backtrace_dump(test_case)].grep(/\S/).join("\n")
+          end
+        end
+
+        results.join("\n\n")
+      end
+
       def latency_check(test_case)
         threshold = config.limits.change_factor
         test_case.speedup_factor >= (1 - threshold) ? ':white_check_mark:' : ':x:'
@@ -135,11 +170,11 @@ module PerfCheckDaemon
       def query_check_and_change(test_case)
         l = config.limits.queries
         if test_case.this_query_count < test_case.reference_query_count && test_case.reference_query_count >= l
-          ":white_check_mark: Reduced AR queries from #{test_case.reference_query_count} to #{test_case.this_query_count}!\n"
+          ":white_check_mark: Reduced AR queries from #{test_case.reference_query_count} to #{test_case.this_query_count}!"
         elsif test_case.this_query_count > test_case.reference_query_count && test_case.this_query_count >= l
-          ":x: Increased AR queries from #{test_case.reference_query_count} to #{test_case.this_query_count}!\n"
+          ":x: Increased AR queries from #{test_case.reference_query_count} to #{test_case.this_query_count}!"
         elsif test_case.this_query_count == test_case.reference_query_count && test_case.reference_query_count >= l
-          ":warning: #{test_case.this_query_count} AR queries were made\n"
+          ":warning: #{test_case.this_query_count} AR queries were made"
         end
       end
 
@@ -150,6 +185,23 @@ module PerfCheckDaemon
         end
       end
 
+      def response_diff_check(test_case)
+        if perf_check.options.verify_no_diff
+          diff = test_case.response_diff
+          if diff.changed?
+            changes = File.read(diff.file)
+            gist = diff_url(job["branch"], changes)
+            message = ":x: [Diff captured](#{gist})"
+            message << "\n```diff\n#{changes.chomp}\n```" if changes.lines.length <= 9
+            message
+          else
+            ":white_check_mark: Response was identical to #{perf_check.options.reference}"
+          end
+        end
+      ensure
+        File.delete(diff.file) if diff && diff.changed?
+      end
+
       def backtrace_dump(test_case)
         this_trace = test_case.this_profiles.map(&:backtrace).compact.first
         reference_trace = test_case.reference_profiles.map(&:backtrace).compact.first
@@ -157,7 +209,7 @@ module PerfCheckDaemon
         message = ''
         if this_trace
           gist = backtrace_url(job['branch'], this_trace)
-          message = ":mag: [Backtrace captured](#{gist}) (this branch)\n\n"
+          message = ":mag: [Backtrace captured](#{gist}) (this branch)"
         end
 
         if reference_trace
@@ -200,6 +252,16 @@ module PerfCheckDaemon
         gist = api "/gists", { public: false, files: gist }, post: true
 
         gist.fetch('html_url')
+      end
+
+      def diff_url(branch, diff)
+        gist_name = "#{branch}-diff.diff"
+        gist_name.gsub!('/', '_')
+
+        gist = { gist_name => { content: diff } }
+        gist = api "/gists", { public: false, files: gist }, post: true
+
+        gist.fetch("html_url")
       end
     end
   end

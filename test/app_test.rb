@@ -23,8 +23,8 @@ class AppTest < MiniTest::Unit::TestCase
     }
   end
 
-  def mention
-    @mention ||= "@#{github.user} -n10 /abc"
+  def mention(*args)
+    "@#{github.user} -n10 #{args.join(' ')} /abc"
   end
 
   def test_get_root
@@ -97,12 +97,20 @@ class AppTest < MiniTest::Unit::TestCase
       app.stub :api, ->(*_){ JSON.parse(payload[:issue].to_json) } do
         payload[:action] = "created"
 
-        # When the issue is not a pull request, no jobs are enqueued
+        # A job is enqueued for each mention
         payload[:comment][:body] = [mention, mention].join("\n")
         post "/comment", payload.to_json
-        assert_equal 0, enqueued_jobs.size
+        assert_equal 2, enqueued_jobs.size
+        enqueued_jobs.clear
 
-        # When the issue is a pull request, a job is enqueued for each mention
+        payload[:comment][:body] = [mention("--branch abc"), mention("--branch xyz")].join("\n")
+        post "/comment", payload.to_json
+        assert_equal 2, enqueued_jobs.size
+        assert_equal "abc", enqueued_jobs[0][1][:branch]
+        assert_equal "xyz", enqueued_jobs[1][1][:branch]
+        enqueued_jobs.clear
+
+        payload[:comment][:body] = [mention, mention].join("\n")
         payload[:issue][:pull_request] = { url: '...' }
         post "/comment", payload.to_json
         assert_equal 2, enqueued_jobs.size

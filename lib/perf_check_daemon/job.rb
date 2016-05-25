@@ -45,7 +45,7 @@ module PerfCheckDaemon
 
       comment = { body: comment_content(job, perf_check, gist.fetch('html_url')) }
 
-      api job.fetch('pull_request_comments'), comment, post: true
+      api job.fetch('issue_comments'), comment, post: true
 
       true
     end
@@ -54,7 +54,7 @@ module PerfCheckDaemon
       message = "There was an error running `perf_check #{job['arguments'].strip}`:"
       message << "\n\n    #{error.class}: "
       error.message.lines.each{ |line| message << line << "\n    " }
-      api job.fetch('pull_request_comments'), { body: message.strip }, post: true
+      api job.fetch('issue_comments'), { body: message.strip }, post: true
     end
 
     def self.gist_content(job, perf_check)

@@ -1,16 +1,16 @@
-# [<%= job[:branch] %> vs <%= job[:reference] %>](<%= job[:pull_request] %>)
+# [<%= job["branch"] %> vs <%= job["reference"] %>](<%= job["issue"] %>)
 
 <% perf_check.test_cases.each do |test_case| %>
 ## <%= test_case.resource %>
                         | runtime (ms) | queries
 ------------------------|--------------|----------------
-<%= job[:branch] %>     |<%= sprintf('%.1f', test_case.this_latency) %>|<%= test_case.this_query_count %>
+<%= job["branch"] %>     |<%= sprintf('%.1f', test_case.this_latency) %>|<%= test_case.this_query_count %>
 
-<%= job[:reference] %>  |<%= sprintf('%.1f', test_case.reference_latency) %>|<%= test_case.reference_query_count %>
+<%= job["reference"] %>  |<%= sprintf('%.1f', test_case.reference_latency) %>|<%= test_case.reference_query_count %>
 
 **Δ**                   |**<%= sprintf('%+.1f', test_case.latency_difference) %>**
 
-<% [[job[:branch], test_case.this_profiles], [job[:reference], test_case.reference_profiles]].each do |branch, profiles| %>
+<% [[job["branch"], test_case.this_profiles], [job["reference"], test_case.reference_profiles]].each do |branch, profiles| %>
 #### <%= branch %>
 \#  | runtime (ms) | status | queries | final rss (MB)
 ----|--------------|--------|---------|-----------------

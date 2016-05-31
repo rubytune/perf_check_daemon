@@ -255,7 +255,7 @@ module PerfCheckDaemon
       end
 
       def diff_url(branch, diff)
-        gist_name = "#{branch}-diff.diff"
+        gist_name = "#{branch}-#{Time.now.to_i}.diff"
         gist_name.gsub!('/', '_')
 
         gist = { gist_name => { content: diff } }

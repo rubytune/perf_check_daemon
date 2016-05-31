@@ -191,7 +191,7 @@ module PerfCheckDaemon
           if diff.changed?
             changes = File.read(diff.file)
             gist = diff_url(job["branch"], changes)
-            message = ":x: [Diff captured](#{gist})"
+            message = ":mag: [Diff captured](#{gist})"
             message << "\n```diff\n#{changes.chomp}\n```" if changes.lines.length <= 9
             message
           else

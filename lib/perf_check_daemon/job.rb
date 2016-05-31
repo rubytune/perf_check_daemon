@@ -206,18 +206,18 @@ module PerfCheckDaemon
         this_trace = test_case.this_profiles.map(&:backtrace).compact.first
         reference_trace = test_case.reference_profiles.map(&:backtrace).compact.first
 
-        message = ''
+        messages = []
         if this_trace
           gist = backtrace_url(job['branch'], this_trace)
-          message = ":mag: [Backtrace captured](#{gist}) (this branch)"
+          message << ":mag: [Backtrace captured](#{gist}) (this branch)"
         end
 
         if reference_trace
           gist = backtrace_url(job['reference'], reference_trace)
-          message << ":mag: [Backtrace captured](#{gist}) (#{job['reference']})"
+          messages << ":mag: [Backtrace captured](#{gist}) (#{job['reference']})"
         end
 
-        message
+        message.join("\n")
       end
 
       def http_errors(test_case)

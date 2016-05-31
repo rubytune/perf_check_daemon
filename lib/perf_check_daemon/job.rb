@@ -209,7 +209,7 @@ module PerfCheckDaemon
         messages = []
         if this_trace
           gist = backtrace_url(job['branch'], this_trace)
-          message << ":mag: [Backtrace captured](#{gist}) (this branch)"
+          messages << ":mag: [Backtrace captured](#{gist}) (this branch)"
         end
 
         if reference_trace
@@ -217,7 +217,7 @@ module PerfCheckDaemon
           messages << ":mag: [Backtrace captured](#{gist}) (#{job['reference']})"
         end
 
-        message.join("\n")
+        messages.join("\n")
       end
 
       def http_errors(test_case)

@@ -12,10 +12,10 @@ module PerfCheckDaemon
     @queue = :perf_check_jobs
 
     def self.perform(job)
-      perf_check = PerfCheck.new(config.app.path)
-
       with_clean_env do
         prepare_app(job)
+
+        perf_check = PerfCheck.new(config.app.path)
         perf_check.load_config
 
         defaults = config.defaults || ''

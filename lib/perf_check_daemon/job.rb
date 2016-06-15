@@ -12,6 +12,8 @@ module PerfCheckDaemon
     @queue = :perf_check_jobs
 
     def self.perform(job)
+      perf_check = nil
+
       with_clean_env do
         prepare_app(job)
 

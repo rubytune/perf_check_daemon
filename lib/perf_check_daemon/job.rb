@@ -21,10 +21,7 @@ module PerfCheckDaemon
         defaults = config.defaults || ''
         job['arguments'] = "#{defaults} #{job.fetch('arguments').strip}".strip
 
-        args = Shellwords.shellsplit(job['arguments'])
-        perf_check.option_parser.parse(args).each do |route|
-          perf_check.add_test_case(route.strip)
-        end
+        perf_check.parse_arguments(job['arguments'])
         perf_check.run
       end
 

@@ -138,7 +138,8 @@ module PerfCheckDaemon
         results = perf_check.test_cases.map do |test_case|
           if http_errors(test_case).empty?
             ["**#{ test_case.resource }**",
-             response_diff_check(test_case)].grep(/\S/).join("\n")
+             response_diff_check(test_case),
+             redirect_check(test_case)].grep(/\S/).join("\n")
           else
             ["**#{ test_case.resource }**",
              ":x: Encountered HTTP errors (#{ http_errors(test_case).join(', ') })",
@@ -223,6 +224,20 @@ module PerfCheckDaemon
         statuses = test_case.this_profiles.map{ |p| p.response_code }
         statuses += test_case.reference_profiles.map{ |p| p.response_code }
         statuses.uniq.reject{ |code| (200...400).include?(code) }
+      end
+
+      def redirect_check(test_case)
+        messages = []
+
+        if (code = test_case.this_profiles.map(&:response_code).find{|x| (300...400).include?(x)})
+          messages << ":grey_exclamation: This branch responded with a #{code} redirect"
+        end
+
+        if (code = test_case.reference_profiles.map(&:response_code).find{|x| (300...400).include?(x)})
+          messages << ":grey_exclamation: #{perf_check.options.reference} responded with a #{code} redirect"
+        end
+
+        messages.join("\n")
       end
 
       private

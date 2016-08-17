@@ -74,6 +74,7 @@ module PerfCheckDaemon
           @failed_jobs << failure
         end
       end
+      @failed_jobs.reverse!
 
       @current_job && @current_job.merge!(@current_job.delete("payload")["args"][0])
       @queued_jobs.each{ |j| j.merge!(j.delete("args")[0]) }

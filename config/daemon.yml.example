@@ -7,6 +7,9 @@ github:
 # hook_secret: abcxyz # secret for github hooks
 redis:
   password: xyz       # redis password, if needed
+#credentials:         # basic auth credentials for /status page
+#  user: u
+#  password: p
 limits:
   queries: 75         # max number of queries in a request before warning is raised
   latency: 4000       # max request latency before warning is raised

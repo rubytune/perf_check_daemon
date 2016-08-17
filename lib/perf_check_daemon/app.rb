@@ -3,6 +3,8 @@ require "sinatra/base"
 require "json"
 require "openssl"
 
+require "erubis"
+
 require "perf_check_daemon/configure"
 require "perf_check_daemon/job"
 require "perf_check_daemon/github_comment"
@@ -16,6 +18,8 @@ module PerfCheckDaemon
     configure :production, :development do
       enable :logging
     end
+
+    set :erb, :escape_html => true
 
     get "/" do
       "Hello World!"
@@ -52,6 +56,43 @@ module PerfCheckDaemon
       "Ok"
     end
 
+    get "/status" do
+      queue = PerfCheckDaemon::Job.queue.to_s
+
+      @queued_jobs = [Resque.peek(queue, 0, Resque.size(queue))].flatten(1)
+
+      @current_job = nil
+      Resque.workers.map do |worker|
+        if worker.working? && (job = worker.job)["queue"] == queue
+          @current_job = job
+        end
+      end
+
+      @failed_jobs = []
+      [Resque::Failure.all(0, Resque::Failure.count)].flatten(1).compact.each do |failure|
+        if failure["payload"]["class"] == "PerfCheckDaemon::Job"
+          @failed_jobs << failure
+        end
+      end
+
+      @current_job && @current_job.merge!(@current_job.delete("payload")["args"][0])
+      @queued_jobs.each{ |j| j.merge!(j.delete("args")[0]) }
+      @failed_jobs.each{ |j| j.merge!(j.delete("payload")["args"][0]) }
+
+      erb :status, content_type: "text/html"
+    end
+
+
+    before /status/ do
+      auth = Rack::Auth::Basic::Request.new(request.env)
+      credentials = config.credentials
+      credentials &&= [config.credentials.user, config.credentials.password]
+      auth_basic = auth.provided? && auth.basic? && auth.credentials
+      unless auth_basic && auth.credentials == credentials
+        headers['WWW-Authenticate'] = 'Basic realm="Restricted Area"'
+        halt 401, "Not authorized\n"
+      end
+    end
 
     before /pull_request|comment/ do
       body = request.body.read

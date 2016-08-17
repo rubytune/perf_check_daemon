@@ -6,6 +6,7 @@ gem 'minitest'
 
 gem 'sinatra'
 gem 'rack-test'
+gem 'erubis'
 
 gem 'rake'
 

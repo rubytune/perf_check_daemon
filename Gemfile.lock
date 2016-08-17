@@ -3,6 +3,7 @@ GEM
   specs:
     colorize (0.7.3)
     diffy (3.0.5)
+    erubis (2.7.0)
     httparty (0.13.5)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
@@ -41,6 +42,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  erubis
   httparty
   minitest
   perf_check

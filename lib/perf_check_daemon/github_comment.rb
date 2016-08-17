@@ -8,6 +8,8 @@ class GithubComment
 
     job_template = {
       issue:          issue.fetch('url'),
+      issue_title:    issue.fetch('title'),
+      issue_html_url: issue.fetch('html_url'),
       issue_comments: issue.fetch('comments_url'),
       github_holder:  object
     }

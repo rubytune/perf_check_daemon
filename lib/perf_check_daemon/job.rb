@@ -11,6 +11,10 @@ module PerfCheckDaemon
   class Job
     @queue = :perf_check_jobs
 
+    class << self
+      attr_reader :queue
+    end
+
     def self.perform(job)
       perf_check = nil
 

@@ -78,7 +78,11 @@ module PerfCheckDaemon
     get "/status" do
       queue = PerfCheckDaemon::Job.queue.to_s
 
-      @queued_jobs = [Resque.peek(queue, 0, Resque.size(queue))].flatten(1)
+      begin
+        @queued_jobs = [Resque.peek(queue, 0, Resque.size(queue))].flatten(1)
+      rescue Redis::CannotConnectError
+        halt 500, "Cannot connect to redis server"
+      end
 
       @current_job = nil
       Resque.workers.map do |worker|

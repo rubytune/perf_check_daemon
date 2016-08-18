@@ -32,7 +32,7 @@ module PerfCheckDaemon
           "1 minute ago"
         when 2...60
           sprintf("%d minutes ago", mins)
-        when 60...(24*60*60)
+        when 60...(24*60)
           sprintf("%.1f hours ago", mins/60.0)
         else
           sprintf("%.1f days ago", mins/60.0/24.0)

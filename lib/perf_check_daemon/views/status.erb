@@ -3,9 +3,69 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
+    <link href="http://fonts.googleapis.com/css?family=Lato:400,700,400italic" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" rel="stylesheet" type="text/css">
+
     <style type="text/css">
+      .container {
+        width: 660px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      h1, h2, table thead {
+        font-family: "Source Code Pro", monospace;
+      }
+
+      table tbody {
+        font-family: Lato, sans-serif;
+      }
+
+      h1 {
+        font-size: 32px;
+        font-weight: 700;
+        color: #676767;
+      }
+
+      h2 {
+        font-size: 16px;
+        color: #676767;
+      }
+
       table thead {
+        font-size: 12px;
+        color: #939393;
+        text-transform: uppercase;
         text-align: left;
+        letter-spacing: 1px;
+        line-height: 13px;
+      }
+
+      table thead th {
+        padding: 12px 0;
+        font-weight: normal;
+        border-bottom: 1px solid #e8e7e7;
+      }
+
+      table tbody td {
+        font-size: 12px;
+        line-height: 13px;
+        padding: 12px 0;
+        vertical-align: top;
+      }
+
+      table tbody tr:not(:first-child) td {
+        border-top: 1px solid #e8e7e7;
+      }
+
+      table tbody, table tbody a {
+        color: #676767;
+        text-decoration: none;
+      }
+
+      table tbody a:hover {
+        transition: 0.2s;
+        color: #f58025
       }
 
       table td span {
@@ -24,7 +84,7 @@
       }
 
       table .arguments {
-        width: 350px;
+        width: 155px;
       }
 
       table .date {
@@ -34,71 +94,78 @@
   </head>
 
   <body>
-    <% if @current_job %>
-      <h2>Current job started at <%= @current_job["run_at"] %></h2>
+    <div class="container">
+      <h1><%= `hostname` %></h1>
+      <% if @current_job %>
+        <h2>Current job</h2>
+        <table>
+          <thead>
+            <tr>
+              <th class="issue">Issue</th>
+              <th class="user">User</th>
+              <th class="date">Started</th>
+              <th class="arguments">Arguments</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td><span class="issue"><a href="<%= @current_job["issue_html_url"] %>"><%= @current_job["issue_title"] %></a></span></td>
+              <td><span class="user"><%= @current_job["github_holder"]["user"]["login"] %></span></td>
+              <td><span class="date"><%= time_ago_in_words @current_job["run_at"] %></span></td>
+              <td><span class="arguments"><%= @current_job["arguments"] %></span></td>
+            </tr>
+          </tbody>
+        </table>
+      <% else %>
+        <h2>No jobs currently running</h2>
+      <% end %>
+
+      <h2>Queued jobs (<%= @queued_jobs.size %>)</h2>
       <table>
         <thead>
           <tr>
-            <th class="user">User</th>
             <th class="issue">Issue</th>
+            <th class="user">User</th>
+            <th class="date">Created</th>
             <th class="arguments">Arguments</th>
           </tr>
         </thead>
 
         <tbody>
+          <% @queued_jobs.each do |job| %>
           <tr>
-            <td><span class="user"><%= @current_job["github_holder"]["user"]["login"] %></span></td>
-            <td><span class="issue"><a href="<%= @current_job["issue_html_url"] %>"><%= @current_job["issue_title"] %></a></span></td>
-            <td><span class="arguments"><%= @current_job["arguments"] %></span></td>
+            <td><span class="issue"><a href="<%= job["issue_html_url"] %>"><%= job["issue_title"] %></a></span></td>
+            <td><span class="user"><%= job["github_holder"]["user"]["login"] %></span></td>
+            <td><span class="date"><%= time_ago_in_words job["created_at"] %></span></td>
+            <td><span class="arguments"><%= job["arguments"] %></span></td>
           </tr>
+          <% end %>
         </tbody>
       </table>
-    <% else %>
-      <h2>No jobs currently running</h2>
-    <% end %>
 
-    <h2>Queued jobs (<%= @queued_jobs.size %>)</h2>
-    <table>
-      <thead>
-        <tr>
-          <th class="user">User</th>
-          <th class="issue">Issue</th>
-          <th class="arguments">Arguments</th>
-        </tr>
-      </thead>
+      <h2>Failed jobs (<%= @failed_jobs.size %>)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th class="issue">Issue</th>
+            <th class="user">User</th>
+            <th class="date">Failed</th>
+            <th class="arguments">Arguments</th>
+          </tr>
+        </thead>
 
-      <tbody>
-        <% @queued_jobs.each do |job| %>
-        <tr>
-          <td><span class="user"><%= job["github_holder"]["user"]["login"] %></span></td>
-          <td><span class="issue"><a href="<%= job["issue_html_url"] %>"><%= job["issue_title"] %></a></span></td>
-          <td><span class="arguments"><%= job["arguments"] %></span></td>
-        </tr>
-        <% end %>
-      </tbody>
-    </table>
-
-    <h2>Failed jobs (<%= @failed_jobs.size %>)</h2>
-    <table>
-      <thead>
-        <tr>
-          <th class="user">User</th>
-          <th class="issue">Issue</th>
-          <th class="date">Failed at</th>
-          <th class="arguments">Arguments</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        <% @failed_jobs.each do |job| %>
-        <tr>
-          <td><span class="user"><%= job["github_holder"]["user"]["login"] %></span></td>
-          <td><span class="issue"><a href="<%= job["issue_html_url"] %>"><%= job["issue_title"] %></a></span></td>
-          <td><span class="date"><%= job["failed_at"] %></span></td>
-          <td><span class="arguments"><%= job["arguments"] %></span></td>
-        </tr>
-        <% end %>
-      </tbody>
-    </table>
+        <tbody>
+          <% @failed_jobs.each do |job| %>
+          <tr>
+            <td><span class="issue"><a href="<%= job["issue_html_url"] %>"><%= job["issue_title"] %></a></span></td>
+            <td><span class="user"><%= job["github_holder"]["user"]["login"] %></span></td>
+            <td><span class="date"><%= time_ago_in_words job["failed_at"] %></span></td>
+            <td><span class="arguments"><%= job["arguments"] %></span></td>
+          </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
   </body>
 </html>

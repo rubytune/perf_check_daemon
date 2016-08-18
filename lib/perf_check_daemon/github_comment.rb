@@ -11,7 +11,8 @@ class GithubComment
       issue_title:    issue.fetch('title'),
       issue_html_url: issue.fetch('html_url'),
       issue_comments: issue.fetch('comments_url'),
-      github_holder:  object
+      github_holder:  object,
+      created_at:     Time.now
     }
 
     if issue["head"]

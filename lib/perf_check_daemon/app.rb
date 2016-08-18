@@ -21,6 +21,25 @@ module PerfCheckDaemon
 
     set :erb, :escape_html => true
 
+    helpers do
+      def time_ago_in_words(time)
+        now = Time.now
+        mins = (now - time.to_time) / 60.0
+        case mins
+        when 0...1
+          sprintf("%d seconds ago", now - time.to_time)
+        when 1...2
+          "1 minute ago"
+        when 2...60
+          sprintf("%d minutes ago", mins)
+        when 60...(24*60*60)
+          sprintf("%.1f hours ago", mins/60.0)
+        else
+          sprintf("%.1f days ago", mins/60.0/24.0)
+        end
+      end
+    end
+
     get "/" do
       "Hello World!"
     end
@@ -79,6 +98,10 @@ module PerfCheckDaemon
       @current_job && @current_job.merge!(@current_job.delete("payload")["args"][0])
       @queued_jobs.each{ |j| j.merge!(j.delete("args")[0]) }
       @failed_jobs.each{ |j| j.merge!(j.delete("payload")["args"][0]) }
+
+      @current_job && (@current_job["run_at"] = DateTime.parse(@current_job["run_at"]))
+      @queued_jobs.each{ |j| j["created_at"] = DateTime.parse(j["created_at"]) }
+      @failed_jobs.each{ |j| j["failed_at"] = DateTime.parse(j["failed_at"]) }
 
       erb :status, content_type: "text/html"
     end

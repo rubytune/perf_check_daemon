@@ -2,6 +2,9 @@
 require 'httparty'
 require 'resque'
 
+require 'sqlite3'
+require 'active_record'
+
 require 'ostruct'
 require 'yaml'
 require 'json'
@@ -110,3 +113,15 @@ config.redis = {
 
 # Resque.inline = true
 Resque.redis = Redis.new(config.redis.to_h)
+
+root = File.expand_path("#{File.dirname(__FILE__)}/../..")
+if ENV['RACK_ENV'] == 'test'
+  dbfile = "#{root}/db/daemon-test.sqlite3"
+else
+  dbfile = "#{root}/db/daemon.sqlite3"
+end
+
+ActiveRecord::Base.establish_connection(
+  adapter: "sqlite3",
+  database: dbfile
+)

@@ -1,0 +1,34 @@
+<h3>Job: <a href="<%= @job[:issue_url] %>"><%= @job[:issue_title] %></a></h3>
+
+<div class="job">
+  <div class="status">
+    <label>Status</label>
+    <span><%= @job[:queued] ? "Queued" : @job[:current] ? "Running" : @job[:failed] ? "Unhandled error" : @job[:complete] ? "Complete" : "Unknown" %></span>
+  </div>
+
+  <div class="status">
+    <label>Branch</label>
+    <span><%= @job[:branch] %></span>
+  </div>
+
+  <div class="status">
+    <label>Time created</label>
+    <% if Time.now-@job[:enqueued_at] < 24*60*60 %>
+    <span><a title="<%= @job[:enqueued_at].strftime("%l:%M%p %b %e, %Y") %>"><%= time_ago_in_words(@job[:enqueued_at]) %></a></span>
+    <% else %>
+    <span><%= @job[:enqueued_at].strftime("%l:%M%p %b %e, %Y") %></span>
+    <% end %>
+  </div>
+
+  <div class="status">
+    <label>Created by</label>
+    <span><%= @job[:github_user] %></span>
+  </div>
+
+  <% if File.exist?(PerfCheckDaemon::Job.log_path(@job[:enqueued_at])) %>
+  <h4>Log</h4>
+  <pre><%= File.read(PerfCheckDaemon::Job.log_path(@job[:enqueued_at])) %></pre>
+  <% else %>
+  <h4>No log available</h4>
+  <% end %>
+</div>

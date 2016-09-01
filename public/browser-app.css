@@ -1,0 +1,241 @@
+
+/* Box layouts */
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+  overflow: hidden;
+}
+
+.browser-app {
+  display: flex;
+  flex-direction: row;
+
+  height: 100%;
+  padding-top: 10px;
+}
+
+.browser-app-filter {
+  flex: 0 0 320px;
+}
+
+.browser-app-viewport {
+  flex: 1 0;
+  padding-right: 80px; /* leave room for actions */
+}
+
+.browser-app-viewport-content {
+  position: relative;
+  height: 100%;
+}
+
+/* Filter box layout */
+.browser-app-filter {
+  display: flex;
+  flex-direction: column;
+}
+
+.browser-app-filter form {
+  flex: 0 0 40px;
+}
+
+.browser-app-filter ul {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Viewport box layout */
+.browser-app-viewport {
+  overflow-y: auto;
+  padding-left: 15px;
+}
+
+/* Actions box layout */
+.browser-app-actions {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+}
+
+.browser-app-action {
+  position: relative;
+  height: 40px;
+  width: 40px;
+  margin-bottom: 8px;
+  font-size: 40px;
+}
+
+.browser-app-action > form > button[type=submit] {
+  font-size: 40px;
+}
+
+/* Results filter form */
+.browser-app-filter-container {
+  position: relative;
+  width: 95%;
+  margin: 0px auto 10px auto;
+}
+
+.browser-app-filter input[type=search] {
+  display: block;
+  width: 100%;
+  height: 30px;
+  font-size: 1.1em;
+
+  padding-left: 28px;
+  padding-right: 28px;
+
+  -webkit-appearance: none;
+
+  border: 1px solid #cccccc;
+  outline: 0;
+  box-shadow: none;
+  border-radius: 4px;
+}
+
+.browser-app-filter input[type=text]::-ms-clear,
+.browser-app-filter input[type=text]::-ms-reveal {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.browser-app-filter input[type="search"]::-webkit-search-decoration,
+.browser-app-filter input[type="search"]::-webkit-search-cancel-button,
+.browser-app-filter input[type="search"]::-webkit-search-results-button,
+.browser-app-filter input[type="search"]::-webkit-search-results-decoration {
+  display: none;
+}
+
+.browser-app-filter-container .browser-app-filter-clear {
+  position: absolute;
+  right: 10px;
+  margin-top: 7px;
+  opacity: 0.3;
+}
+
+.browser-app-filter-container .browser-app-filter-clear a {
+  color: #00f;
+}
+
+
+/* Font styling */
+.browser-app {
+  color: #333;
+}
+
+.browser-app-viewport {
+  font-family: Sans-Serif;
+  font-size: 12pt;
+  line-height: 150%;
+}
+
+.browser-app-viewport h1,
+.browser-app-viewport h2,
+.browser-app-viewport h3,
+.browser-app-filter-container {
+  line-height: 150%;
+  font-family: "Georgia", "Times New Roman", Serif;
+}
+
+.browser-app-viewport h1,
+.browser-app-viewport h2,
+.browser-app-viewport h3,
+.browser-app-viewport h4 {
+  font-weight: bold;
+  line-height: 30px; /* this puts the first header level with the search box */
+  margin-bottom: 0.3em;
+}
+
+.browser-app-viewport h1 + p,
+.browser-app-viewport h2 + p,
+.browser-app-viewport h3 + p,
+.browser-app-viewport h4 + p {
+  margin-top: 0px;
+}
+
+.browser-app-viewport h1 {
+  font-size: 1.8em;
+}
+
+.browser-app-viewport h2 {
+  font-size: 1.5em;
+}
+
+.browser-app-viewport h3 {
+  font-size: 1.2em;
+}
+
+.browser-app-viewport h4 {
+  font-weight: bold;
+  font-size: 100%;
+  margin-bottom: 0px;
+}
+
+.browser-app-results {
+  font-family: Sans-Serif;
+  font-size: 11pt;
+  line-height: normal;
+}
+
+
+
+
+/* Results list */
+.browser-app-results {
+  list-style-type: none;
+  margin: 0px;
+  margin-bottom: 15px;
+  padding: 0px;
+}
+
+.browser-app-results li {
+  border-top: 1px dashed #ddd;
+  padding: 10px 5px 10px 10px;
+}
+
+.browser-app-results li:first-child {
+  border-top: none;
+}
+
+.browser-app-results li.browser-app-selected {
+  background-color: #99ccff;
+}
+
+/* Actions */
+.browser-app-action {
+  text-align: center;
+}
+
+.browser-app-actions hr {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border: 0px;
+  border-top: 1px solid #ddd;
+}
+
+.browser-app-action a {
+  text-decoration: none;
+}
+
+.browser-app-action .fa,
+.browser-app-action > a {
+  color: #bbb;
+}
+
+.browser-app-action .fa:hover,
+ .browser-app-action > a:hover {
+  color: #888;
+}
+
+.browser-app-action > form > button[type=submit] {
+  border: 0;
+  background-color: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+
+.browser-app-action > form > button[type=submit]:hover {
+  color: #888;
+}

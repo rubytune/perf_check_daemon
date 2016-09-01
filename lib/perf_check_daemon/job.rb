@@ -6,6 +6,7 @@ require 'json'
 require 'perf_check'
 
 require "perf_check_daemon/configure"
+require "perf_check_daemon/finished_job"
 
 module PerfCheckDaemon
   class Job
@@ -15,7 +16,25 @@ module PerfCheckDaemon
       attr_reader :queue
     end
 
+    def self.id(timestamp)
+      timestamp = DateTime.parse(timestamp) if timestamp.is_a?(String)
+      timestamp.to_time.strftime("%Y%m%d%H%M%S.%L")
+    end
+
+    def self.log_path(timestamp)
+      log = "log/perf_checks/#{id(timestamp)}.txt"
+      log = File.expand_path("#{File.dirname(__FILE__)}/../../#{log}")
+      system("mkdir", "-p", File.dirname(log))
+      log
+    end
+
     def self.perform(job)
+      stdout = $stdout.dup
+      stderr = $stderr.dup
+      log = File.open(log_path(job["created_at"]), "w+")
+      $stdout.reopen(log)
+      $stderr.reopen(log)
+
       perf_check = nil
 
       with_clean_env do
@@ -36,6 +55,9 @@ module PerfCheckDaemon
       post_error(job, e)
     rescue PerfCheck::Exception => e
       post_error(job, e)
+    ensure
+      $stdout.reopen(stdout)
+      $stderr.reopen(stderr)
     end
 
     def self.post_results(job, perf_check)
@@ -47,6 +69,16 @@ module PerfCheckDaemon
       gist = api "/gists", { public: false, files: gist }, post: true
 
       comment = { body: comment_content(job, perf_check, gist.fetch('html_url')) }
+
+      FinishedJob.create(
+        issue_title: job["issue_title"],
+        issue_url: job["issue_html_url"],
+        github_user: job["github_holder"]["user"]["login"],
+        branch: job["branch"],
+        arguments: job["arguments"],
+        job_enqueued_at: job["created_at"],
+        job_id: id(job["created_at"])
+      )
 
       api job.fetch('issue_comments'), comment, post: true
 

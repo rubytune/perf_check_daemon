@@ -6,4 +6,7 @@ require "bundler"
 Bundler.require
 
 require "perf_check_daemon/app"
-run PerfCheckDaemon::App
+require "perf_check_daemon/status_app"
+
+map("/"){ run PerfCheckDaemon::App }
+map("/status"){ run PerfCheckDaemon::StatusApp }

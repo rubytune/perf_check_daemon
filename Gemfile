@@ -8,7 +8,9 @@ gem 'sinatra'
 gem 'rack-test'
 gem 'erubis'
 
+gem 'activerecord'
+gem 'sqlite3'
+
 gem 'rake'
 
 gem 'perf_check'
-

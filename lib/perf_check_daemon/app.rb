@@ -7,9 +7,14 @@ require "erubis"
 require "perf_check_daemon/configure"
 require "perf_check_daemon/job"
 require "perf_check_daemon/finished_job"
+require "sinatra/activerecord"
+
 
 module PerfCheckDaemon
   class App < Sinatra::Base
+    register Sinatra::ActiveRecordExtension
+    set :database, ActiveRecord::Base.connection_config
+
     HMAC_DIGEST = OpenSSL::Digest::Digest.new('sha1')
 
     attr_accessor :payload

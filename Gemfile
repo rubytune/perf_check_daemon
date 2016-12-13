@@ -5,8 +5,10 @@ gem 'httparty'
 gem 'minitest'
 
 gem 'sinatra'
+gem 'sinatra-activerecord'
 gem 'rack-test'
 gem 'erubis'
+gem 'racksh'
 
 gem 'activerecord'
 gem 'sqlite3'

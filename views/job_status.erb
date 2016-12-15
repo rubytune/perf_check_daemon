@@ -1,9 +1,13 @@
-<h3>Job: <a href="<%= @job[:issue_url] %>"><%= @job[:issue_title] %></a></h3>
+<% job_status =  @job[:queued] ? "Queued" : @job[:current] ? "running" : @job[:failed] ? "failed" : @job[:complete] ? "complete" : "unknown" %>
+<% job_status_class =  @job[:queued] ? "queued" : @job[:current] ? "Running" : @job[:failed] ? "Unhandled error" : @job[:complete] ? "Complete" : "Unknown" %>
+<h2>
+  <i class="fa fa-github"></i> <%= @job[:issue_url].to_s.include?("issue") ? 'Issue' : 'Pull Request' %>: <a href="<%= @job[:issue_url] %>"> <%= @job[:issue_title] %></a>
+</h2>
 
 <div class="job">
   <div class="status">
     <label>Status</label>
-    <span><%= @job[:queued] ? "Queued" : @job[:current] ? "Running" : @job[:failed] ? "Unhandled error" : @job[:complete] ? "Complete" : "Unknown" %></span>
+    <span class="status-label status <%= job_status_class %>"><%= job_status %></span>
   </div>
 
   <div class="status">
@@ -12,11 +16,16 @@
   </div>
 
   <div class="status">
+    <label>Command</label>
+    <span><%= @job[:args] %></span>
+  </div>
+
+  <div class="status">
     <label>Time created</label>
     <% if Time.now-@job[:enqueued_at] < 24*60*60 %>
-    <span><a title="<%= @job[:enqueued_at].strftime("%l:%M%p %b %e, %Y") %>"><%= time_ago_in_words(@job[:enqueued_at]) %></a></span>
+      <span><a title="<%= @job[:enqueued_at].strftime("%l:%M%p %b %e, %Y") %>"><%= time_ago_in_words(@job[:enqueued_at]) %></a></span>
     <% else %>
-    <span><%= @job[:enqueued_at].strftime("%l:%M%p %b %e, %Y") %></span>
+      <span><%= @job[:enqueued_at].strftime("%l:%M%p %b %e, %Y") %></span>
     <% end %>
   </div>
 
@@ -26,9 +35,9 @@
   </div>
 
   <% if File.exist?(PerfCheckDaemon::Job.log_path(@job[:enqueued_at])) %>
-  <h4>Log</h4>
-  <pre><%= File.read(PerfCheckDaemon::Job.log_path(@job[:enqueued_at]), encoding: "UTF-8") %></pre>
+    <h4>Log</h4>
+    <pre><%= File.read(PerfCheckDaemon::Job.log_path(@job[:enqueued_at]), encoding: "UTF-8") %></pre>
   <% else %>
-  <h4>No log available</h4>
+    <h4>No log available.</h4>
   <% end %>
 </div>

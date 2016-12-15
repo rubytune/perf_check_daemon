@@ -5,6 +5,8 @@
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react-dom.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment-with-locales.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <script type="text/javascript" src="/browser-app.js"></script>
     <link href="/browser-app.css" rel="stylesheet" type="text/css" />
 
@@ -32,53 +34,90 @@
                        : "failed";
             var e = React.createElement(
               "div", {},
-              [React.createElement("span", { className: "status "+status }, status),
-               React.createElement("strong", {}, props.issue_title),
-               React.createElement("span", { className: "time" }, props.timestamp)]
+              [
+                React.createElement("small", { className: "time pull-right" }, [React.createElement("i", { className: "fa fa-clock-o" }), " " + moment(props.enqueued_at).calendar().toString()]),
+                React.createElement("br"),
+                React.createElement("span", { className: "status "+status }, status),
+                React.createElement("strong", {}, props.branch),
+                React.createElement("br"),
+              ]
             );
             return e;
           }
         }, container.innerHTML);
-
+        
         ReactDOM.render(app, container);
       };
     </script>
 
     <style type="text/css">
+      a {
+        color: #658EBF;
+        text-decoration: none;
+      }
+
       html, body, #content {
         height: 100%;
         width: 100%;
       }
 
-      .browser-app-results li .status {
+      .pull-right {
+        float: right;
+      }
+
+      .system-status {
+        padding: 10px 15px;
+        color: #fff;
+        margin: 0 5px;
+        border-radius: 5px;
+      }
+
+      .system-status.online {
+        background: #19B81D;
+      }
+
+      .system-status.offline {
+        background: #CE0005;
+      }
+
+      .status-label, .browser-app-results li .status {
         display: inline-block;
         width: 65px;
         text-align: center;
         margin-right: 5px;
-        font-size: 0.8em;
+        font-size: 0.9em;
+        padding: 3px 0;
         border: 1px solid #ddd;
-        border-radius: 3px;
+        border-radius: 5px;
         background-color: #efefef;
       }
 
+      .browser-app-results li:hover {
+        cursor: pointer;
+      }
+
       .status.running {
-        color: green;
+        color: #19B81D;
       }
       
-       .status.queued {
-         color: yellow;
-       }
+      .status.queued {
+        color: #fff;
+        background-color: #E99835 !important;
+      }
       
-       .status.complete {
-         color: blue;
-       }
+      .status.complete {
+        color: #fff;
+        background-color: #19B81D !important;
+      }
       
-       .status.failed {
-         color: red;
-       }
+      .status.failed {
+        color: #fff;
+        background-color: #CE0005 !important;
+      }
 
       .browser-app-results li .time {
         display: block;
+        font-size: 10px;
       }
 
       .job .status label {
@@ -163,7 +202,19 @@
 
   <body>
     <div id="content">
-      <h1><%= `hostname` %></h1>
+      <% if true %>
+        <span class="system-status online pull-right">Daemon Online <i class='fa fa-check'></i></span>
+      <% else %>
+        <span class="system-status offline pull-right">Daemon Offline <i class='fa fa-times'></i></span>
+      <% end %>
+
+      <% if true %>
+        <span class="system-status online pull-right">Resque Online <i class='fa fa-check'></i></span>
+      <% else %>
+        <span class="system-status offline pull-right">Resque Offline <i class='fa fa-times'></i></span>
+      <% end %>
+
+      <h1><i class="fa fa-medkit"></i> Perf-Check Status Page</h1>
 
       <%== yield %>
     </div>

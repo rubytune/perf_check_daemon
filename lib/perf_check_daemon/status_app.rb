@@ -1,4 +1,3 @@
-
 require "sinatra/base"
 require "json"
 require "openssl"
@@ -101,7 +100,7 @@ module PerfCheckDaemon
             job = failure["payload"]["args"][0]
 
             next unless job_matches_query?(job, query)
-
+            
             created_at = DateTime.parse(job["created_at"])
             failed.push(
               failed: true,
@@ -161,8 +160,8 @@ module PerfCheckDaemon
           job[:id] = PerfCheckDaemon::Job.id(job[:enqueued_at])
           job[:url] = "/status/#{job[:id]}"
         end
-
-        jobs.unshift(html: "Recent jobs:") unless query || jobs.empty?
+        jobs.reverse!
+        jobs.unshift(html: "Most recent jobs:") unless query || jobs.empty?
         jobs
       rescue Redis::CannotConnectError
         halt 500, "Cannot connect to redis server"
@@ -170,9 +169,9 @@ module PerfCheckDaemon
     end
 
     get "/search.json" do
+      content_type :json
       search_results = self.search_results(params["f"])
 
-      content_type "application/json"
       JSON.generate(results: search_results)
     end
 
@@ -188,7 +187,6 @@ module PerfCheckDaemon
       layout = request.xhr? ? nil : :layout
       erb :job_status, layout: layout, content_type: "text/html"
     end
-
 
     before // do
       auth = Rack::Auth::Basic::Request.new(request.env)

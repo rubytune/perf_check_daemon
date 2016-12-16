@@ -2,3 +2,6 @@ config/daemon.yml
 db/*.sqlite3
 .ruby-version
 .ruby-gemset
+.bundle
+vendor
+log/*

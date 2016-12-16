@@ -202,17 +202,19 @@
 
   <body>
     <div id="content">
-      <% if true %>
-        <span class="system-status online pull-right">Daemon Online <i class='fa fa-check'></i></span>
-      <% else %>
-        <span class="system-status offline pull-right">Daemon Offline <i class='fa fa-times'></i></span>
-      <% end %>
+      <div id="status-content">
+        <% if true %>
+          <span class="system-status online pull-right">Daemon Online <i class='fa fa-check'></i></span>
+        <% else %>
+          <span class="system-status offline pull-right">Daemon Offline <i class='fa fa-times'></i></span>
+        <% end %>
 
-      <% if true %>
-        <span class="system-status online pull-right">Resque Online <i class='fa fa-check'></i></span>
-      <% else %>
-        <span class="system-status offline pull-right">Resque Offline <i class='fa fa-times'></i></span>
-      <% end %>
+        <% if resque_online? %>
+          <span class="system-status online pull-right">Resque Online <i class='fa fa-check'></i></span>
+        <% else %>
+          <span class="system-status offline pull-right">Resque Offline <i class='fa fa-times'></i></span>
+        <% end %>
+      </div>
 
       <h1><i class="fa fa-medkit"></i> Perf-Check Status Page</h1>
 

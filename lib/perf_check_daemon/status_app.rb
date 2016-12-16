@@ -18,6 +18,10 @@ module PerfCheckDaemon
     set :erb, :escape_html => true
 
     helpers do
+      def resque_online?
+        Resque.info[:workers] > 0
+      end
+
       def time_ago_in_words(time)
         now = Time.now
         mins = (now - time.to_time) / 60.0
@@ -143,7 +147,6 @@ module PerfCheckDaemon
         end
       end
 
-
       def search_results(query=nil)
         query = nil unless "#{query}".match(/\S/)
 
@@ -166,6 +169,12 @@ module PerfCheckDaemon
       rescue Redis::CannotConnectError
         halt 500, "Cannot connect to redis server"
       end
+    end
+
+    get "/service-info.json" do
+      content_type :json
+
+      JSON.generate({resque_online: resque_online?})
     end
 
     get "/search.json" do

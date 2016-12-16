@@ -1,4 +1,3 @@
-
 require "sinatra/base"
 require "json"
 require "openssl"
@@ -19,6 +18,10 @@ module PerfCheckDaemon
     set :erb, :escape_html => true
 
     helpers do
+      def resque_online?
+        Resque.info[:workers] > 0
+      end
+
       def time_ago_in_words(time)
         now = Time.now
         mins = (now - time.to_time) / 60.0
@@ -101,7 +104,7 @@ module PerfCheckDaemon
             job = failure["payload"]["args"][0]
 
             next unless job_matches_query?(job, query)
-
+            
             created_at = DateTime.parse(job["created_at"])
             failed.push(
               failed: true,
@@ -144,7 +147,6 @@ module PerfCheckDaemon
         end
       end
 
-
       def search_results(query=nil)
         query = nil unless "#{query}".match(/\S/)
 
@@ -161,18 +163,24 @@ module PerfCheckDaemon
           job[:id] = PerfCheckDaemon::Job.id(job[:enqueued_at])
           job[:url] = "/status/#{job[:id]}"
         end
-
-        jobs.unshift(html: "Recent jobs:") unless query || jobs.empty?
+        jobs.reverse!
+        jobs.unshift(html: "Most recent jobs:") unless query || jobs.empty?
         jobs
       rescue Redis::CannotConnectError
         halt 500, "Cannot connect to redis server"
       end
     end
 
+    get "/service-info.json" do
+      content_type :json
+
+      JSON.generate({resque_online: resque_online?})
+    end
+
     get "/search.json" do
+      content_type :json
       search_results = self.search_results(params["f"])
 
-      content_type "application/json"
       JSON.generate(results: search_results)
     end
 
@@ -188,7 +196,6 @@ module PerfCheckDaemon
       layout = request.xhr? ? nil : :layout
       erb :job_status, layout: layout, content_type: "text/html"
     end
-
 
     before // do
       auth = Rack::Auth::Basic::Request.new(request.env)

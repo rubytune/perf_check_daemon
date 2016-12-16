@@ -69,8 +69,15 @@ exports.BrowserApp = React.createClass({
 
   componentDidMount: function () {
     this.refs.ui.parentNode.style.height = "100%";
+    setInterval(this.pollForNewResults, 1750);
 
     window.onpopstate = this.popHistory;
+  },
+
+  pollForNewResults: function () {
+    if(this.state.filter == ""){
+      this.refreshFilter();
+    }
   },
 
   ajax: function (url, data, callback) {
@@ -232,7 +239,7 @@ exports.BrowserApp = React.createClass({
               React.createElement(
                 "a",
                 { href: "#" },
-                React.createElement("i", { className: "fa fa-ban" })
+                React.createElement("i", { className: "fa fa-search" })
               )
             ),
             React.createElement("input", { ref: "filter", type: "search", name: "f", autoComplete: "off",

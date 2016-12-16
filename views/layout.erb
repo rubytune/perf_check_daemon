@@ -203,16 +203,10 @@
   <body>
     <div id="content">
       <div id="status-content">
-        <% if true %>
+        <% if resque_online? %>
           <span class="system-status online pull-right">Daemon Online <i class='fa fa-check'></i></span>
         <% else %>
           <span class="system-status offline pull-right">Daemon Offline <i class='fa fa-times'></i></span>
-        <% end %>
-
-        <% if resque_online? %>
-          <span class="system-status online pull-right">Resque Online <i class='fa fa-check'></i></span>
-        <% else %>
-          <span class="system-status offline pull-right">Resque Offline <i class='fa fa-times'></i></span>
         <% end %>
       </div>
 

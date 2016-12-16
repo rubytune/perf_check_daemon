@@ -163,7 +163,7 @@ module PerfCheckDaemon
           job[:id] = PerfCheckDaemon::Job.id(job[:enqueued_at])
           job[:url] = "/status/#{job[:id]}"
         end
-        jobs.reverse!
+
         jobs.unshift(html: "Most recent jobs:") unless query || jobs.empty?
         jobs
       rescue Redis::CannotConnectError

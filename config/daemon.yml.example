@@ -1,6 +1,8 @@
 app:
   path: /abc/xyz      # path to the app under test
 
+bugsnag_api_key: YOUR_API_KEY
+
 github:
   repo: user/repo     # repository to watch
   user: bob           # look for @bob mentions

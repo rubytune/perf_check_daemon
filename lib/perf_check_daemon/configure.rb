@@ -128,4 +128,5 @@ ActiveRecord::Base.establish_connection(
 
 Bugsnag.configure do |bugsnag_config|
   bugsnag_config.api_key = config.bugsnag_api_key
+  bugsnag_config.release_stage = (ENV['RACK_ENV'] == 'test' ? 'development' : 'production')
 end

@@ -107,7 +107,7 @@ def app_logger
 end
 
 config.redis = {
-  host: config.host || 'localhost',
+  host: 'localhost',
   port: 6379
 }.merge((config.redis || {}).to_h).to_ostruct
 

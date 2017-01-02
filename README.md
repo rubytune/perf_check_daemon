@@ -47,6 +47,7 @@ github.user | Name of the github user whose mention triggers a perf check.
 github.hook_secret | Secret for github web hooks.
 github.token | Github api token. Should be cleared for `repo`, `gist`, `notifications`, and `user` scopes.
 redis.password | Redis password (optional).
+redis.port | Redis port (default: 6379).
 redis.host | Redis host (default: localhost).
 
 ### Webhooks
@@ -86,7 +87,7 @@ job = {
 }
 ```
 
-To submit this job, run
+To submit this job using `racksh`, run
 
 ```
 Resque.enqueue(PerfCheckDaemon::Job, job)

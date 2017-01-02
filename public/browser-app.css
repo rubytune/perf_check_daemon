@@ -243,25 +243,6 @@ a {
   color: #888;
 }
 
-.pull-right {
-  float: right;
-}
-
-.system-status {
-  padding: 10px 15px;
-  color: #fff;
-  margin: 5px;
-  border-radius: 5px;
-}
-
-.system-status.online {
-  background: #19B81D;
-}
-
-.system-status.offline {
-  background: #CE0005;
-}
-
 .status-label, .browser-app-results li .status {
   display: inline-block;
   width: 65px;

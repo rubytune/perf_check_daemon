@@ -5,92 +5,22 @@
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.0/react.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.0/react-dom.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment-with-locales.min.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
     <script type="text/javascript" src="/browser-app.js"></script>
-
+    <script type="text/javascript" src="/perf-check.js"></script>
     <link href="/browser-app.css" rel="stylesheet" type="text/css" />
+    <link href="/perf-check.css" rel="stylesheet" type="text/css" />
 
     <script type="text/javascript">
-      window.onload = function() {
-        var container = document.getElementById("content");
+      window.perfcheckOpts = {
+        initialFilter: "<%= params["f"] %>",
+        initialResults: <%== JSON.generate(@search_results) %>,
+        initialSelectedResult: <%= params["job_id"] || "null" %>,
+      }
 
-        var app = React.createElement(BrowserApp, {
-          searchPath: "/status/search.json",
-          searchPlaceholder: "search issues",
-
-          initialFilter: "<%= params["f"] %>",
-          initialResults: <%== JSON.generate(@search_results) %>,
-          initialSelectedResult: <%= params["job_id"] || "null" %>,
-
-          resultTag: function(props) {
-            if (props.html)
-              return React.createElement("div", {
-                dangerouslySetInnerHTML: {__html: props.html}
-              });
-
-            var status = props.current ? "running"
-                       : props.queued ? "queued"
-                       : props.complete ? "complete"
-                       : "failed";
-            var e = React.createElement(
-              "div", {},
-              [
-                React.createElement("small", { className: "time pull-right" }, [React.createElement("i", { className: "fa fa-clock-o" }), " " + moment(props.enqueued_at).calendar().toString()]),
-                React.createElement("br"),
-                React.createElement("span", { className: "status "+status }, status),
-                React.createElement("strong", {}, props.branch.substring(0,28)),
-                React.createElement("br"),
-              ]
-            );
-            return e;
-          }
-        }, container.innerHTML);
-        
-        ReactDOM.render(app, container);
-      };
-    </script>
-
-    <script type="text/babel">
-        var StatusBarComponent = React.createClass({
-          getInitialState() {
-            return { daemonOnline: false }
-          },
-          componentDidMount: function() {
-            this.checkDaemonStatus()
-            setInterval(this.checkDaemonStatus, 5000);
-          },
-
-          checkDaemonStatus: function() {
-            var self = this;
-            var request = new XMLHttpRequest();
-            request.open('GET', '/status/service-info.json', true);
-
-            request.onload = function() {
-              if(request.status >= 200 && request.status < 400) {
-                var resqueStatus = JSON.parse(request.responseText)["resque_online"]
-                self.setState({daemonOnline: resqueStatus});
-              }else{
-                console.error("(" + request.status + ") Invalid Request: ")
-                console.error(request);
-              }
-            };
-
-            request.onerror = function() { console.error("Connection error while trying to reach daemon status at /status/service-info.json"); };
-            request.send();
-          },
-
-          render: function() {
-            if(this.state.daemonOnline == true){
-              return (<span className="system-status online pull-right">Daemon Online <i className='fa fa-check'></i></span>)
-            }else{
-              return (<span className="system-status offline pull-right">Daemon Offline <i className='fa fa-times'></i></span>)
-            }
-          }
-        })
-        ReactDOM.render(<StatusBarComponent />, document.querySelector('#status-content'))
+      window.onload = perfCheckAppInit;
     </script>
   </head>
 
@@ -98,9 +28,7 @@
     <div id="status-content"></div>
 
     <div id="content">
-
       <h1><i class="fa fa-medkit"></i> Perf-Check Status Page</h1>
-
       <%== yield %>
     </div>
   </body>

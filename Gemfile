@@ -9,6 +9,7 @@ gem 'sinatra-activerecord'
 gem 'rack-test'
 gem 'erubis'
 gem 'racksh'
+gem 'bugsnag'
 
 gem 'activerecord'
 gem 'sqlite3'

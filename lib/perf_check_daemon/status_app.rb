@@ -62,6 +62,7 @@ module PerfCheckDaemon
 
           created_at = DateTime.parse(job["created_at"])
           queued.push(
+            arguments: job["arguments"],
             queued: true,
             issue_title: job["issue_title"],
             issue_url: job["issue_html_url"],
@@ -84,6 +85,7 @@ module PerfCheckDaemon
 
             created_at = DateTime.parse(job["created_at"])
             current.push(
+              arguments: job["arguments"],
               current: true,
               issue_title: job["issue_title"],
               issue_url: job["issue_html_url"],
@@ -107,6 +109,7 @@ module PerfCheckDaemon
             
             created_at = DateTime.parse(job["created_at"])
             failed.push(
+              arguments: job["arguments"],
               failed: true,
               issue_title: job["issue_title"],
               issue_url: job["issue_html_url"],
@@ -137,6 +140,7 @@ module PerfCheckDaemon
 
         scope.order("created_at DESC").map do |job|
           {
+            arguments: job.arguments,
             complete: true,
             issue_title: job.issue_title,
             issue_url: job.issue_url,

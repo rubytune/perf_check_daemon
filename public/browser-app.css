@@ -243,39 +243,8 @@ a {
   color: #888;
 }
 
-.status-label, .browser-app-results li .status {
-  display: inline-block;
-  width: 65px;
-  text-align: center;
-  margin-right: 5px;
-  font-size: 0.9em;
-  padding: 3px 0;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  background-color: #efefef;
-}
-
 .browser-app-results li:hover {
   cursor: pointer;
-}
-
-.status.running {
-  color: #19B81D;
-}
-
-.status.queued {
-  color: #fff;
-  background-color: #E99835 !important;
-}
-
-.status.complete {
-  color: #fff;
-  background-color: #19B81D !important;
-}
-
-.status.failed {
-  color: #fff;
-  background-color: #CE0005 !important;
 }
 
 .browser-app-results li .time {

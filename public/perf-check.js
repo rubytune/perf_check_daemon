@@ -73,14 +73,14 @@ window.perfCheckSatusAppInit = function() {
       if (this.state.daemonOnline == true) {
         return React.createElement(
           'span',
-          { className: 'system-status online pull-right' },
+          { className: 'system-status online' },
           'Daemon Online ',
           React.createElement('i', { className: 'fa fa-check' })
         );
       } else {
         return React.createElement(
           'span',
-          { className: 'system-status offline pull-right' },
+          { className: 'system-status offline' },
           'Daemon Offline ',
           React.createElement('i', { className: 'fa fa-times' })
         );

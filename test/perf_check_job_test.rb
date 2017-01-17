@@ -5,7 +5,7 @@ require File.expand_path '../test_helper.rb', __FILE__
 def config
   $APP_CONFIG ||= OpenStruct.new(
     defaults: '-n42',
-    app: OpenStruct.new(path: 'application_path')
+    app: OpenStruct.new(path: 'application_path', timezone: 'GMT')
   )
 end
 

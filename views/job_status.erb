@@ -31,7 +31,6 @@
 
     <div class="status">
       <label>Time created</label>
-      <% @job[:enqueued_at] = Time.now %>
       <% enqueued_at_formatted = (@job[:enqueued_at].utc + Time.zone_offset(config.app.timezone)).strftime("%l:%M%p %b %e, %Y") %>
       <% if Time.now-@job[:enqueued_at] < 24*60*60 %>
         <span><a title="<%= enqueued_at_formatted %>"><%= time_ago_in_words(@job[:enqueued_at]) %></a></span>

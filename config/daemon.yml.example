@@ -1,5 +1,6 @@
 app:
   path: /abc/xyz      # path to the app under test
+  timezone: PST       # timezone you would like the status app to display
 
 bugsnag_api_key: YOUR_API_KEY
 

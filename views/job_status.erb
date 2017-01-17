@@ -6,8 +6,9 @@
     <small><strong>Time:</strong> <%= Time.now.to_s %></small>
   </p>
 <% else %>
-  <% job_status =  @job[:queued] ? "Queued" : @job[:current] ? "running" : @job[:failed] ? "failed" : @job[:complete] ? "complete" : "unknown" %>
-  <% job_status_class =  @job[:queued] ? "queued" : @job[:current] ? "Running" : @job[:failed] ? "Unhandled error" : @job[:complete] ? "Complete" : "Unknown" %>
+  <% job_status =  @job[:queued] ? "Queued" : @job[:current] ? "Running" : @job[:failed] ? "Unhandled error" : @job[:complete] ? "Complete" : "Unknown" %>
+  <% job_status_class =  @job[:queued] ? "Queued" : @job[:current] ? "running" : @job[:failed] ? "failed" : @job[:complete] ? "complete" : "unknown" %>
+
   <h2>
     <i class="fa fa-github"></i> <%= @job[:issue_url].to_s.include?("issue") ? 'Issue' : 'Pull Request' %>: <a href="<%= @job[:issue_url] %>"> <%= @job[:issue_title] %></a>
   </h2>
@@ -30,10 +31,12 @@
 
     <div class="status">
       <label>Time created</label>
+      <% @job[:enqueued_at] = Time.now %>
+      <% enqueued_at_formatted = (@job[:enqueued_at].utc + Time.zone_offset(config.app.timezone)).strftime("%l:%M%p %b %e, %Y") %>
       <% if Time.now-@job[:enqueued_at] < 24*60*60 %>
-        <span><a title="<%= @job[:enqueued_at].strftime("%l:%M%p %b %e, %Y") %>"><%= time_ago_in_words(@job[:enqueued_at]) %></a></span>
+        <span><a title="<%= enqueued_at_formatted %>"><%= time_ago_in_words(@job[:enqueued_at]) %></a></span>
       <% else %>
-        <span><%= @job[:enqueued_at].strftime("%l:%M%p %b %e, %Y") %></span>
+        <span><%= enqueued_at_formatted %></span>
       <% end %>
     </div>
 

@@ -227,6 +227,7 @@ exports.BrowserApp = React.createClass({
       React.createElement(
         "div",
         { className: "browser-app-filter" },
+        React.createElement("span", {id: "status-page-title"}, 'Perf-Check Status Page'),
         React.createElement(
           "form",
           { action: this.props.searchPath, onSubmit: this.refreshFilter },
@@ -242,6 +243,9 @@ exports.BrowserApp = React.createClass({
                 React.createElement("i", { className: "fa fa-search" })
               )
             ),
+
+
+
             React.createElement("input", { ref: "filter", type: "search", name: "f", autoComplete: "off",
               placeholder: this.props.searchPlaceholder, value: this.state.filter, onChange: this.onFilterInputChange })
           )

@@ -62,6 +62,7 @@ module PerfCheckDaemon
 
           created_at = DateTime.parse(job["created_at"])
           queued.push(
+            arguments: job["arguments"],
             queued: true,
             issue_title: job["issue_title"],
             issue_url: job["issue_html_url"],
@@ -84,6 +85,7 @@ module PerfCheckDaemon
 
             created_at = DateTime.parse(job["created_at"])
             current.push(
+              arguments: job["arguments"],
               current: true,
               issue_title: job["issue_title"],
               issue_url: job["issue_html_url"],
@@ -107,6 +109,7 @@ module PerfCheckDaemon
             
             created_at = DateTime.parse(job["created_at"])
             failed.push(
+              arguments: job["arguments"],
               failed: true,
               issue_title: job["issue_title"],
               issue_url: job["issue_html_url"],
@@ -115,7 +118,7 @@ module PerfCheckDaemon
               enqueued_at: created_at
             )
 
-            break if !query && failed.size > 10
+            break if !query && failed.size > 25
           end
         end
         failed
@@ -132,11 +135,12 @@ module PerfCheckDaemon
         elsif query.is_a?(Hash)
           scope = FinishedJob.where(job_id: query[:id])
         else
-          scope = FinishedJob.limit(10)
+          scope = FinishedJob.limit(25)
         end
 
         scope.order("created_at DESC").map do |job|
           {
+            arguments: job.arguments,
             complete: true,
             issue_title: job.issue_title,
             issue_url: job.issue_url,

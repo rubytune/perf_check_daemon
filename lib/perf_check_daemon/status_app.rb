@@ -118,7 +118,7 @@ module PerfCheckDaemon
               enqueued_at: created_at
             )
 
-            break if !query && failed.size > 10
+            break if !query && failed.size > 25
           end
         end
         failed
@@ -135,7 +135,7 @@ module PerfCheckDaemon
         elsif query.is_a?(Hash)
           scope = FinishedJob.where(job_id: query[:id])
         else
-          scope = FinishedJob.limit(10)
+          scope = FinishedJob.limit(25)
         end
 
         scope.order("created_at DESC").map do |job|

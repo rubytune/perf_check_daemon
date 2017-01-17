@@ -25,7 +25,7 @@ window.perfCheckAppInit = function() {
           React.createElement("small", { className: "time pull-right" }, [React.createElement("i", { className: "fa fa-clock-o" }), " " + moment(props.enqueued_at).calendar().toString()]),
           React.createElement("br"),
           React.createElement("br"),
-          React.createElement("strong", {}, props.branch.substring(0,47)),
+          React.createElement("strong", {}, props.branch.substring(0,37)),
         ]
       );
       return e;

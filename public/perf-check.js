@@ -21,11 +21,11 @@ window.perfCheckAppInit = function() {
       var e = React.createElement(
         "div", {},
         [
+          React.createElement("small", { className: "pull-left status "+status }, status),
           React.createElement("small", { className: "time pull-right" }, [React.createElement("i", { className: "fa fa-clock-o" }), " " + moment(props.enqueued_at).calendar().toString()]),
           React.createElement("br"),
-          React.createElement("span", { className: "status "+status }, status),
-          React.createElement("strong", {}, props.branch),
           React.createElement("br"),
+          React.createElement("strong", {}, props.branch),
         ]
       );
       return e;

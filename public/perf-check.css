@@ -12,6 +12,11 @@ html, body, #content {
   float: right;
 }
 
+#status-page-title {
+  margin: -5px 0 3px 0;
+  font-weight: bold;
+  text-align: center;
+}
 
 .system-status {
   padding: 10px 15px;

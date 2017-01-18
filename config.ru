@@ -9,7 +9,7 @@ require 'bugsnag'
 require "perf_check_daemon/app"
 require "perf_check_daemon/status_app"
 
-use Bugsnag::Rack if defined?(Bugsnag)
+use Bugsnag::Rack
 set :raise_errors, true
 set :show_exceptions, ENV['RACK_ENV'] == 'test'
 

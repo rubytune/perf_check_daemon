@@ -202,13 +202,15 @@ module PerfCheckDaemon
     end
 
     before // do
-      auth = Rack::Auth::Basic::Request.new(request.env)
-      credentials = config.credentials
-      credentials &&= [config.credentials.user, config.credentials.password]
-      auth_basic = auth.provided? && auth.basic? && auth.credentials
-      unless auth_basic && auth.credentials == credentials
-        headers['WWW-Authenticate'] = 'Basic realm="Restricted Area"'
-        halt 401, "Not authorized\n"
+      unless config.credentials.password.blank? && config.credentials.user.blank?
+        auth = Rack::Auth::Basic::Request.new(request.env)
+        credentials = config.credentials
+        credentials &&= [config.credentials.user, config.credentials.password]
+        auth_basic = auth.provided? && auth.basic? && auth.credentials
+        unless auth_basic && auth.credentials == credentials
+          headers['WWW-Authenticate'] = 'Basic realm="Restricted Area"'
+          halt 401, "Not authorized\n"
+        end
       end
     end
   end

@@ -39,6 +39,8 @@ daemon.yml configuration:
 | key |  |
 |-----|---------|
 app.path | Filesystem path to the rails app being perf check'd. The app should be setup to run in development mode, and have `gem "perf_check"` bundled.
+credentials.user | User used for HTTP basic auth on /status page (optional).
+credentials.password | Password used for HTTP basic auth on /status page (optional).
 limits.change_factor | Factor of change in latency before a warning is added to the pull request comment.
 limits.latency | Absolute response time allowed before a warning is added to the pull request comment.
 limits.queries | Number of queries allowed before a warning is added to the pull request comment.

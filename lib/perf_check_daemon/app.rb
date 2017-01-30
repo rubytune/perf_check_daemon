@@ -21,7 +21,7 @@ module PerfCheckDaemon
     set :root, File.expand_path("#{File.dirname(__FILE__)}/../..")
 
     get "/" do
-      "Hello World!"
+      redirect '/status'
     end
 
     # pull_request

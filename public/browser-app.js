@@ -97,6 +97,7 @@ exports.BrowserApp = React.createClass({
       if (xhttp.readyState == 4 && xhttp.status == 200) callback.call(self, xhttp.responseText);
     };
     xhttp.open("GET", url, true);
+    xhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xhttp.send();
   },
 
@@ -121,7 +122,7 @@ exports.BrowserApp = React.createClass({
 
   filter: function (f, callback) {
     var self = this;
-    this.ajax(this.props.searchPath, { f: f, headers: {'X-Requested-With': 'XMLHttpRequest'} }, function (resp) {
+    this.ajax(this.props.searchPath, { f: f}, function (resp) {
       resp = JSON.parse(resp);
       self.setState({ filter: f, results: resp.results }, function () {
         self.pushHistory();

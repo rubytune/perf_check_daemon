@@ -18,7 +18,7 @@ module PerfCheckDaemon
 
     def self.id(timestamp)
       timestamp = DateTime.parse(timestamp) if timestamp.is_a?(String)
-      timestamp.to_time.strftime("%Y%m%d%H%M%S.%L")
+      timestamp.strftime("%Y%m%d%H%M%S.%L")
     end
 
     def self.log_path(timestamp)
@@ -49,12 +49,15 @@ module PerfCheckDaemon
         perf_check.parse_arguments(job['arguments'])
         perf_check.run
       end
-
-      post_results(job, perf_check)
+      
+      details = post_results(job, perf_check)
+      create_finished_job(job, details)
     rescue OptionParser::InvalidOption => e
-      post_error(job, e)
+      details = post_error(job, e)
+      create_finished_job(job, details, failed: true)
     rescue PerfCheck::Exception => e
-      post_error(job, e)
+      details = post_error(job, e)
+      create_finished_job(job, details, failed: true)
     ensure
       $stdout.reopen(stdout)
       $stderr.reopen(stderr)
@@ -70,6 +73,11 @@ module PerfCheckDaemon
 
       comment = { body: comment_content(job, perf_check, gist.fetch('html_url')) }
 
+      api job.fetch('issue_comments'), comment, post: true
+      comment[:body]
+    end
+
+    def self.create_finished_job(job, details, failed: false)
       FinishedJob.create(
         issue_title: job["issue_title"],
         issue_url: job["issue_html_url"],
@@ -77,19 +85,18 @@ module PerfCheckDaemon
         branch: job["branch"],
         arguments: job["arguments"],
         job_enqueued_at: job["created_at"],
-        job_id: id(job["created_at"])
+        job_id: id(job["created_at"]),
+        failed: failed,
+        details: details
       )
-
-      api job.fetch('issue_comments'), comment, post: true
-
-      true
     end
 
     def self.post_error(job, error)
-      message = "There was an error running `perf_check #{job['arguments'].strip}`:"
+      message = "Problem running `perf_check #{job['arguments'].strip}`:"
       message << "\n\n    #{error.class}: "
       error.message.lines.each{ |line| message << line << "\n    " }
       api job.fetch('issue_comments'), { body: message.strip }, post: true
+      message
     end
 
     def self.gist_content(job, perf_check)

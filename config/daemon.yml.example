@@ -11,7 +11,7 @@ github:
 # hook_secret: abcxyz # secret for github hooks
 
 redis:
-  password: xyz       # redis password, if needed
+  password:           # redis password, if needed
 
 #credentials:         # basic auth credentials for /status page
 #  user: u

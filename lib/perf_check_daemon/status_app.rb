@@ -141,12 +141,13 @@ module PerfCheckDaemon
         scope.order("created_at DESC").map do |job|
           {
             arguments: job.arguments,
-            complete: true,
+            complete: !job.failed?,
             issue_title: job.issue_title,
             issue_url: job.issue_url,
             branch: job.branch,
             github_user: job.github_user,
-            enqueued_at: job.enqueued_at
+            enqueued_at: job.enqueued_at,
+            details: job.details
           }
         end
       end
@@ -189,7 +190,7 @@ module PerfCheckDaemon
     end
 
     get "/" do
-      @search_results = search_results(params["f"])
+      @search_results = search_results(params["f"])      
       erb :status, layout: :layout, content_type: "text/html"
     end
 
@@ -202,7 +203,7 @@ module PerfCheckDaemon
     end
 
     before // do
-      if config.credentials&.password && config.credentials&.user
+      if config.credentials
         auth = Rack::Auth::Basic::Request.new(request.env)
         credentials = config.credentials
         credentials &&= [config.credentials.user, config.credentials.password]

@@ -122,7 +122,7 @@ exports.BrowserApp = React.createClass({
 
   filter: function (f, callback) {
     var self = this;
-    this.ajax(this.props.searchPath, { f: f}, function (resp) {
+    this.ajax(this.props.searchPath, { f: f }, function (resp) {
       resp = JSON.parse(resp);
       self.setState({ filter: f, results: resp.results }, function () {
         self.pushHistory();

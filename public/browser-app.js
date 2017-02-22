@@ -121,7 +121,7 @@ exports.BrowserApp = React.createClass({
 
   filter: function (f, callback) {
     var self = this;
-    this.ajax(this.props.searchPath, { f: f }, function (resp) {
+    this.ajax(this.props.searchPath, { f: f, headers: {'X-Requested-With': 'XMLHttpRequest'} }, function (resp) {
       resp = JSON.parse(resp);
       self.setState({ filter: f, results: resp.results }, function () {
         self.pushHistory();
@@ -243,9 +243,6 @@ exports.BrowserApp = React.createClass({
                 React.createElement("i", { className: "fa fa-search" })
               )
             ),
-
-
-
             React.createElement("input", { ref: "filter", type: "search", name: "f", autoComplete: "off",
               placeholder: this.props.searchPlaceholder, value: this.state.filter, onChange: this.onFilterInputChange })
           )

@@ -17,6 +17,7 @@ GEM
     arel (6.0.3)
     bugsnag (5.0.1)
     builder (3.2.2)
+    coderay (1.1.1)
     colorize (0.7.3)
     diffy (3.0.5)
     erubis (2.7.0)
@@ -25,6 +26,7 @@ GEM
       multi_xml (>= 0.5.2)
     i18n (0.7.0)
     json (1.8.3)
+    method_source (0.8.2)
     minitest (5.8.1)
     mono_logger (1.1.0)
     multi_json (1.11.2)
@@ -32,6 +34,10 @@ GEM
     perf_check (0.7.5)
       colorize (= 0.7.3)
       diffy (= 3.0.5)
+    pry (0.10.4)
+      coderay (~> 1.1.0)
+      method_source (~> 0.8.1)
+      slop (~> 3.4)
     rack (1.6.4)
     rack-protection (1.5.3)
       rack
@@ -57,6 +63,7 @@ GEM
     sinatra-activerecord (2.0.11)
       activerecord (>= 3.2)
       sinatra (~> 1.0)
+    slop (3.6.0)
     sqlite3 (1.3.11)
     thread_safe (0.3.5)
     tilt (1.4.1)
@@ -75,6 +82,7 @@ DEPENDENCIES
   httparty
   minitest
   perf_check
+  pry
   rack-test
   racksh
   rake

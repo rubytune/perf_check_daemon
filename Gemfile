@@ -10,6 +10,7 @@ gem 'rack-test'
 gem 'erubis'
 gem 'racksh'
 gem 'bugsnag'
+gem 'pry'
 
 gem 'activerecord'
 gem 'sqlite3'

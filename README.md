@@ -31,7 +31,7 @@ Three separate comments will be posted in reply. Please see the [perf_check read
 1. Redis
 2. To receive github webhook you'll need to be reachable at an external address/port combination.
 
-#### Config
+####  Edit Config
 Copy config/daemon.yml.example to config/daemon.yml, and fill in the appropriate values.
 
 daemon.yml configuration:
@@ -52,6 +52,12 @@ redis.password | Redis password (optional).
 redis.port | Redis port (default: 6379).
 redis.host | Redis host (default: localhost).
 
+#### Setup db
+
+```
+bundle exec rake db:create
+```
+
 ### Webhooks
 
 Add two web hooks to your github repository:
@@ -68,14 +74,26 @@ There are two components you'll need to daemonize:
 
   * The [sinatra app](https://github.com/wioux/perf_check_daemon/blob/master/lib/perf_check_daemon/app.rb) which listens for github web hooks
   * The [resque worker](https://github.com/wioux/perf_check_daemon/blob/master/lib/perf_check_daemon/job.rb) which will do the actual perf checking and post the results back to github. 
-  
-To submit a test job directly to resque you can boot up resque with
+
+Boot up the server with 
+
+`rackup -p 3000`
+
+
+Boot up resque with
 
 `bundle exec rake resque:work QUEUE=perf_check_jobs`
 
-You can boot into irb to submit a job.
+
+### Submit a test job
 
 Here's an example job from github.com/sudara/alonetone
+
+Boot into irb.
+
+```
+bundle exec racksh
+```
 
 ```
 job = {

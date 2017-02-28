@@ -18,5 +18,3 @@ class CreateFinishedJobs < ActiveRecord::Migration
     end
   end
 end
-
-CreateFinishedJobs.migrate(:up)

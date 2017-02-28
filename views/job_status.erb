@@ -6,7 +6,7 @@
     <small><strong>Time:</strong> <%= Time.now.to_s %></small>
   </p>
 <% else %>
-  <% job_status =  @job[:queued] ? "Queued" : @job[:current] ? "Running" : @job[:failed] ? "Unhandled error" : @job[:complete] ? "Complete" : "Unknown" %>
+  <% job_status =  @job[:queued] ? "Queued" : @job[:current] ? "Running" : @job[:failed] ? "Unhandled error" : @job[:complete] ? "Complete" : "Failed" %>
   <% job_status_class =  @job[:queued] ? "Queued" : @job[:current] ? "running" : @job[:failed] ? "failed" : @job[:complete] ? "complete" : "unknown" %>
 
   <h2>
@@ -43,6 +43,12 @@
       <label>Created by</label>
       <span><%= @job[:github_user] %></span>
     </div>
+    
+    <% if @job[:details]  %>
+      <div class="details">
+        <%= @job[:details] %>
+      </div>
+    <% end %>
 
     <% if File.exist?(PerfCheckDaemon::Job.log_path(@job[:enqueued_at])) %>
       <h4>Log</h4>

@@ -146,7 +146,8 @@ module PerfCheckDaemon
             issue_url: job.issue_url,
             branch: job.branch,
             github_user: job.github_user,
-            enqueued_at: job.enqueued_at
+            enqueued_at: job.enqueued_at,
+            details: job.details
           }
         end
       end

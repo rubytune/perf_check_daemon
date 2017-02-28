@@ -141,7 +141,7 @@ module PerfCheckDaemon
         scope.order("created_at DESC").map do |job|
           {
             arguments: job.arguments,
-            complete: true,
+            complete: !job.failed?,
             issue_title: job.issue_title,
             issue_url: job.issue_url,
             branch: job.branch,

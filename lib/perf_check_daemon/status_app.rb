@@ -203,7 +203,7 @@ module PerfCheckDaemon
     end
 
     before // do
-      if config.credentials&.password && config.credentials&.user
+      if config.credentials
         auth = Rack::Auth::Basic::Request.new(request.env)
         credentials = config.credentials
         credentials &&= [config.credentials.user, config.credentials.password]

@@ -81,6 +81,10 @@ You'll also need the github token mentioned in the config above.
 
 ### Running the app
 
+#### Redis is needed
+
+`brew install redis`
+
 There are two components you'll need to daemonize:
 
   * The [sinatra app](https://github.com/wioux/perf_check_daemon/blob/master/lib/perf_check_daemon/app.rb) which listens for github web hooks

@@ -18,7 +18,7 @@ module PerfCheckDaemon
 
     def self.id(timestamp)
       timestamp = DateTime.parse(timestamp) if timestamp.is_a?(String)
-      timestamp.to_time.strftime("%Y%m%d%H%M%S.%L")
+      timestamp.strftime("%Y%m%d%H%M%S.%L")
     end
 
     def self.log_path(timestamp)

@@ -1,12 +1,23 @@
 # perf_check_daemon
-Watches pull requests on your github repository and comments on how the changes will affect your app's performance using [perf_check](https://github.com/rubytune/perf_check).
+
+This repo contains:
+
+1) A Sinatra app that receives webhooks from github
+
+When a certain user is mentionned, it will fire off
+
+2) A resque job that automates Rails performance testing via [perf_check](https://github.com/rubytune/perf_check).
+
+3) A status app to view all jobs and their history.
+
 
 ### Usage
+
 Call out to your user in a pull request comment (in the body, review, or diff), giving the urls to test, and shortly after you'll get a reply summarizing the performance differences between the branches:
 
 ![](https://cloud.githubusercontent.com/assets/6469642/13340018/cb4dd9c2-dbe1-11e5-98b7-8501b2512c70.png)
 
-Any arguments you pass in will be fed directly into perf_check. For example, this comment would run 3 different performance checks each with custom options:
+Any arguments you pass in are fed directly into perf_check. For example, this comment would run 3 different performance checks each with custom options:
 
 ```
 Hit the /posts action 50 times:

@@ -190,7 +190,7 @@ module PerfCheckDaemon
     end
 
     get "/" do
-      @search_results = search_results(params["f"])
+      @search_results = search_results(params["f"])      
       erb :status, layout: :layout, content_type: "text/html"
     end
 

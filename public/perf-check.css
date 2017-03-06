@@ -8,6 +8,11 @@ html, body, #content {
   width: 100%;
 }
 
+#header {
+  height: 100px;
+  background-color: #CCC;
+}
+
 .pull-right {
   float: right;
 }

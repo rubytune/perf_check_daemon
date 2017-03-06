@@ -50,6 +50,7 @@ html, body, #content {
 
 .browser-app-results li:hover {
   cursor: pointer;
+  background-color: #fffdef;
 }
 
 .status-label.running, .status.running {

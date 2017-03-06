@@ -82,6 +82,15 @@ html, body, #content {
   font-size: 10px;
 }
 
+.job header.job-header {
+  background-color: #EEE;
+}
+
+.job header.job-header pre {
+  display: inline;
+  background-color: #FFF;
+}
+
 .job .status label {
   display: inline-block;
   width: 125px;

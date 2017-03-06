@@ -14,31 +14,33 @@
   </h2>
 
   <div class="job">
-    <div class="status">
-      <span class="status-label status <%= job_status_class %>"><%= job_status %></span>
-    </div>
+    <header class="job-header">
+      <div class="status">
+        <span class="status-label status <%= job_status_class %>"><%= job_status %></span>
+      </div>
 
-    <div class="status">
-      <label>Branch</label>
-      <span><%= @job[:branch] %></span>
-    </div>
+      <div class="status">
+        <label>Branch</label>
+        <span><%= @job[:branch] %></span>
+      </div>
 
-    <div class="status">
-      <label>Command</label>
-      <span><pre><%= @job[:arguments] %></pre></span>
-    </div>
+      <div class="status">
+        <label>Command</label>
+        <pre><%= @job[:arguments] %></pre>
+      </div>
 
-    <div class="status">
-      Created by
-      <span><%= @job[:github_user] %></span>
-      at
-      <% enqueued_at_formatted = (@job[:enqueued_at].utc + Time.zone_offset(config.app.timezone)).strftime("%l:%M%p %b %e, %Y") %>
-      <% if Time.now-@job[:enqueued_at] < 24*60*60 %>
-        <span><a title="<%= enqueued_at_formatted %>"><%= time_ago_in_words(@job[:enqueued_at]) %></a></span>
-      <% else %>
-        <span><%= enqueued_at_formatted %></span>
-      <% end %>
-    </div>
+      <div class="status">
+        Created by
+        <span><%= @job[:github_user] %></span>
+        at
+        <% enqueued_at_formatted = (@job[:enqueued_at].utc + Time.zone_offset(config.app.timezone)).strftime("%l:%M%p %b %e, %Y") %>
+        <% if Time.now-@job[:enqueued_at] < 24*60*60 %>
+          <span><a title="<%= enqueued_at_formatted %>"><%= time_ago_in_words(@job[:enqueued_at]) %></a></span>
+        <% else %>
+          <span><%= enqueued_at_formatted %></span>
+        <% end %>
+      </div>
+    </header>
     
     <% if @job[:details]  %>
       <div class="details">

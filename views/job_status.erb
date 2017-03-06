@@ -9,12 +9,12 @@
   <% job_status =  @job[:queued] ? "Queued" : @job[:current] ? "Running" : @job[:failed] ? "Unhandled error" : @job[:complete] ? "Complete" : "Failed" %>
   <% job_status_class =  @job[:queued] ? "Queued" : @job[:current] ? "running" : @job[:failed] ? "failed" : @job[:complete] ? "complete" : "unknown" %>
 
-  <h2>
-    <i class="fa fa-github"></i> <%= @job[:issue_url].to_s.include?("issue") ? 'Issue' : 'Pull Request' %>: <a href="<%= @job[:issue_url] %>"> <%= @job[:issue_title] %></a>
-  </h2>
 
   <div class="job">
     <header class="job-header">
+      <h2>
+        <%= @job[:issue_url].to_s.include?("issue") ? 'Issue' : 'Pull Request' %>: <a href="<%= @job[:issue_url] %>"> <%= @job[:issue_title] %></a>
+      </h2>
       <div class="status">
         <span class="status-label status <%= job_status_class %>"><%= job_status %></span>
       </div>

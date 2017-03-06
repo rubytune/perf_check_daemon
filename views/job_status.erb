@@ -15,7 +15,6 @@
 
   <div class="job">
     <div class="status">
-      <label>Status</label>
       <span class="status-label status <%= job_status_class %>"><%= job_status %></span>
     </div>
 
@@ -30,18 +29,15 @@
     </div>
 
     <div class="status">
-      <label>Time created</label>
+      Created by
+      <span><%= @job[:github_user] %></span>
+      at
       <% enqueued_at_formatted = (@job[:enqueued_at].utc + Time.zone_offset(config.app.timezone)).strftime("%l:%M%p %b %e, %Y") %>
       <% if Time.now-@job[:enqueued_at] < 24*60*60 %>
         <span><a title="<%= enqueued_at_formatted %>"><%= time_ago_in_words(@job[:enqueued_at]) %></a></span>
       <% else %>
         <span><%= enqueued_at_formatted %></span>
       <% end %>
-    </div>
-
-    <div class="status">
-      <label>Created by</label>
-      <span><%= @job[:github_user] %></span>
     </div>
     
     <% if @job[:details]  %>

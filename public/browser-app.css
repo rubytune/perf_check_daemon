@@ -91,13 +91,10 @@ a {
   display: block;
   width: 100%;
   height: 30px;
-  font-size: 1.1em;
-
-  padding-left: 28px;
-  padding-right: 28px;
-
+  font-size: 0.8em;
+  padding-left: 8px;
+  padding-right: 8px;
   -webkit-appearance: none;
-
   border: 1px solid #cccccc;
   outline: 0;
   box-shadow: none;
@@ -126,6 +123,8 @@ a {
 }
 
 .browser-app-filter-container .browser-app-filter-clear a {
+  position: relative;
+  top: -4px;
   color: #00f;
 }
 

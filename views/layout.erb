@@ -19,7 +19,6 @@
         initialResults: <%== JSON.generate(@search_results) %>,
         initialSelectedResult: <%= params["job_id"] || "null" %>,
       }
-
       window.onload = perfCheckAppInit;
     </script>
   </head>
@@ -29,7 +28,6 @@
       <h1>Perf Check Status Page</h1>
     </div>
     <div id="content">
-      
       <%== yield %>
     </div>
   </body>

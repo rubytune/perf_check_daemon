@@ -11,6 +11,14 @@ html, body, #content {
 #header {
   height: 100px;
   background-color: #CCC;
+  margin-bottom: 20px;
+}
+
+#header h1 {
+  padding-top: 30px;
+  padding-left: 12px;
+  letter-spacing: 1px;
+  color: #000;
 }
 
 .pull-right {

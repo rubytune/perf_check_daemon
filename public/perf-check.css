@@ -106,19 +106,36 @@ body,
 .job header.job-header {
   border: 1px solid #EEE;
   padding: 10px;
+}
 
+.job header.job-header h2.branch-name {
+  color: #000;
+}
+
+.job header.job-header .issue-or-pull-request {
+
+}
+
+.job header.job-header .re-run {
+  position: relative;
+  top: -10px;
+  margin-left: 10px;
+  text-decoration: underline;
 }
 
 .job header.job-header pre.command {
-  display: inline;
+  display: inline-block;
   background-color: #EEE;
   border: 1px solid #CCC;
   margin-top: 10px;
+  margin-bottom: 0;
+  font-size: .9em;
+  padding: 3px;
 }
 
-.job header.job-header .created-by { 
-  margin-top: 10px;
-}
+/*.job header.job-header .created-by { */
+  /*margin-top: 10px;*/
+/*}*/
 
 .job .status label {
   font-weight: bold;

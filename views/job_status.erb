@@ -15,13 +15,12 @@
       <div class="status pull-right">
         <span class="status-label status <%= job_status_class %>"><%= job_status %></span>
       </div>
-      <h2>
+      <h2 class="branch-name">
         <span><%= @job[:branch] %></span>
       </h2>
-      <h3>
+      <div class="issue-or-pull-request">
         <%= @job[:issue_url].to_s.include?("issue") ? 'Issue' : 'Pull Request' %>: <a href="<%= @job[:issue_url] %>"> <%= @job[:issue_title] %></a>
-      </h3>
-      <pre class="command"><%= @job[:arguments] %></pre>
+      </div>
       <div class="created-by">
         <% enqueued_at_formatted = (@job[:enqueued_at].utc + Time.zone_offset(config.app.timezone)).strftime("%l:%M%p %b %e, %Y") %>
         <% if Time.now-@job[:enqueued_at] < 24*60*60 %>
@@ -31,6 +30,9 @@
         <% end %>
         by
         <span><%= @job[:github_user] %></span>
+        <br>
+        <pre class="command"><%= @job[:arguments] %></pre>
+        <a href="#" class="re-run">re-run</a>
       </div>
     </header>
     

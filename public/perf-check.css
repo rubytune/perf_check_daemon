@@ -121,8 +121,8 @@ body,
 }
 
 .job header.job-header .re-run {
-  position: relative;
-  top: -10px;
+  /*position: relative;*/
+  /*top: -10px;*/
   margin-left: 10px;
   text-decoration: underline;
   font-size: .9em;

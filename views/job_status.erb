@@ -29,11 +29,10 @@
           <span><%= enqueued_at_formatted %></span>
         <% end %>
         by
-        <span><%= @job[:github_user] %></span>
-        <br>
+        <span><strong><%= @job[:github_user] %></strong></span>
+      </div>
         <pre class="command"><%= @job[:arguments] %></pre>
         <a href="#" class="re-run">re-run</a>
-      </div>
     </header>
     
     <% if @job[:details]  %>

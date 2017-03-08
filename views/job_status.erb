@@ -12,33 +12,25 @@
 
   <div class="job">
     <header class="job-header">
-      <h2>
-        <%= @job[:issue_url].to_s.include?("issue") ? 'Issue' : 'Pull Request' %>: <a href="<%= @job[:issue_url] %>"> <%= @job[:issue_title] %></a>
-      </h2>
-      <div class="status">
+      <div class="status pull-right">
         <span class="status-label status <%= job_status_class %>"><%= job_status %></span>
       </div>
-
-      <div class="status">
-        <label>Branch</label>
+      <h2>
         <span><%= @job[:branch] %></span>
-      </div>
-
-      <div class="status">
-        <label>Command</label>
-        <pre><%= @job[:arguments] %></pre>
-      </div>
-
-      <div class="status">
-        Created by
-        <span><%= @job[:github_user] %></span>
-        at
+      </h2>
+      <h3>
+        <%= @job[:issue_url].to_s.include?("issue") ? 'Issue' : 'Pull Request' %>: <a href="<%= @job[:issue_url] %>"> <%= @job[:issue_title] %></a>
+      </h3>
+      <pre class="command"><%= @job[:arguments] %></pre>
+      <div class="created-by">
         <% enqueued_at_formatted = (@job[:enqueued_at].utc + Time.zone_offset(config.app.timezone)).strftime("%l:%M%p %b %e, %Y") %>
         <% if Time.now-@job[:enqueued_at] < 24*60*60 %>
           <span><a title="<%= enqueued_at_formatted %>"><%= time_ago_in_words(@job[:enqueued_at]) %></a></span>
         <% else %>
           <span><%= enqueued_at_formatted %></span>
         <% end %>
+        by
+        <span><%= @job[:github_user] %></span>
       </div>
     </header>
     

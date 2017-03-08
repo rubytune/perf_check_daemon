@@ -26,6 +26,11 @@ a {
   flex: 0 0 280px;
 }
 
+.browser-app-divider {
+  width: 10px;
+  /*background-color: #eee;*/
+}
+
 .browser-app-viewport {
   flex: 1 0;
   padding-right: 10px; /* leave room for actions */

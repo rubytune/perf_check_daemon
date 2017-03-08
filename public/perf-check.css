@@ -104,18 +104,30 @@ body,
 }
 
 .job header.job-header {
-  background-color: #EEE;
+  border: 1px solid #EEE;
+  padding: 10px;
+
 }
 
-.job header.job-header pre {
+.job header.job-header pre.command {
   display: inline;
-  background-color: #FFF;
+  background-color: #EEE;
+  border: 1px solid #CCC;
+  margin-top: 10px;
+}
+
+.job header.job-header .created-by { 
+  margin-top: 10px;
 }
 
 .job .status label {
   font-weight: bold;
   display: inline-block;
   width: 125px;
+}
+
+.job .details {
+  padding-top: 20px;
 }
 
 .job pre {

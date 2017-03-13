@@ -96,8 +96,9 @@ body,
 
 .status-label.failed,
 .status.failed {
-  color: #FFF;
-  background-color: #CE0005 !important;
+  /*color: #FFF;*/
+  /*background-color: #CE0005 !important;*/
+  color: #CE0005;
 }
 
 .browser-app-results {

@@ -58,9 +58,9 @@ body,
 .browser-app-results li .status {
   font-size: .8em;
   display: inline-block;
-  width: 60px;
+  width: 50px;
   margin-right: 3px;
-  padding: 1px;
+  padding: 2px 1px;
   text-align: center;
   border: 1px solid #DDD;
   border-radius: 2px;
@@ -98,10 +98,39 @@ body,
   font-size: .8em;
 }
 
+.browser-app-results li {
+  overflow: auto;
+}
+
+.browser-app-results li .status {
+  margin-top: 4px;
+  display: block;
+  float: left;
+  margin-right: 6px;
+}
+
+.browser-app-results li .branch {
+  margin-top: 4px;
+  display: block;
+  float: left;
+}
+
 .browser-app-results li .time {
   font-size: 10px;
-  display: block;
   margin-top: 4px;
+  clear: both;
+  float: left;
+  display: block;
+  margin-right: 4px;
+  margin-top: 8px;
+}
+
+.browser-app-results li .name {
+  font-size: 10px;
+  margin-top: 4px;
+  display: block;
+  float: left;
+  margin-top: 8px;
 }
 
 .job header.job-header {

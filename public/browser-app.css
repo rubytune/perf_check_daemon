@@ -255,11 +255,6 @@ a {
   cursor: pointer;
 }
 
-.browser-app-results li .time {
-  display: block;
-  font-size: 10px;
-}
-
 .job .status label {
   display: inline-block;
   width: 125px;

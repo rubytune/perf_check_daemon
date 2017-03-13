@@ -59,7 +59,7 @@ body,
   font-size: .8em;
   display: inline-block;
   width: 50px;
-  margin-right: 3px;
+  margin-right: 9px;
   padding: 2px 1px;
   text-align: center;
   border: 1px solid #DDD;
@@ -71,9 +71,15 @@ body,
   background-color: #FFF9CC;
 }
 
+.browser-app-results li:last-child:hover {
+  background-color: transparent;
+  cursor: default;
+}
+
 .status-label.running,
 .status.running {
-  color: #19B81D;
+  color: #FFF;
+  background-color: #19B81D;
 }
 
 .status-label.queued,

@@ -11,6 +11,7 @@ gem 'erubis'
 gem 'racksh'
 gem 'bugsnag'
 gem 'pry'
+gem 'kramdown'
 
 gem 'activerecord'
 gem 'sqlite3'

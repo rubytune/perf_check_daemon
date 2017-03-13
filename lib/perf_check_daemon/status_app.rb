@@ -21,6 +21,13 @@ module PerfCheckDaemon
       def resque_online?
         Resque.info[:workers] > 0
       end
+      
+      def markdown(text)
+        text = Kramdown::Document.new(text, input: 'GFM', hard_wrap: true).to_html
+        text.gsub(':white_check_mark:','<i class="fa fa-check-square" aria-hidden="true"></i>')
+        text.gsub(':warning:','<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>')
+        text.gsub(':x:','<i class="fa fa-times-circle" aria-hidden="true"></i>')
+      end
 
       def time_ago_in_words(time)
         now = Time.now

@@ -34,7 +34,7 @@
     
     <% if @job[:details]  %>
       <div class="details">
-        <%= @job[:details] %>
+        <%== markdown(@job[:details]) %>
       </div>
     <% end %>
 

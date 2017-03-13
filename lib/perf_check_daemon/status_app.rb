@@ -169,8 +169,8 @@ module PerfCheckDaemon
           job[:url] = "/status/#{job[:id]}"
         end
 
-        jobs.unshift(html: "Most recent jobs:") unless query || jobs.empty?
-        jobs
+        # jobs.unshift(html: "Most recent jobs:") unless query || jobs.empty ?
+        # jobs
       rescue Redis::CannotConnectError
         halt 500, "Cannot connect to redis server"
       end

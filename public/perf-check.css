@@ -68,10 +68,8 @@ body,
 }
 
 .browser-app-results li:hover {
-  /*cursor: pointer;*/
-  background-color: #FFFDEF;
+  background-color: #FFF9CC;
 }
-
 
 .status-label.running,
 .status.running {

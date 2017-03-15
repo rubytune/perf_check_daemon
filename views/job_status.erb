@@ -18,10 +18,10 @@
         <h2 class="branch-name">
           <span><%= @job[:branch] %></span>
         </h2>
-
+      <a href="#" class="styled-button view-issue">View Issue</a>
         <a href="<%= @job[:issue_url] %>"> <%= @job[:issue_title] %></a>
 
-        <a href="#" class="styled-button view-pr">View #123123</a><br>
+        
         <br>
 
 
@@ -30,8 +30,9 @@
         <h2>
           <a href="<%= @job[:issue_url] %>"> <%= @job[:issue_title] %></a>
         </h2>
+        <a href="#" class="styled-button view-pr">View #123123</a><br>
         <span><%= @job[:branch] %></span>
-        <a href="#" class="styled-button view-issue">View Issue</a>
+        
 
 
       <% end %>      

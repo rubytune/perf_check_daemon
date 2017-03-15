@@ -32,10 +32,10 @@ window.perfCheckAppInit = function() {
   }, container.innerHTML);
   
   ReactDOM.render(app, container);
-  window.perfCheckSatusAppInit();
+  window.perfCheckStatusAppInit();
 };
 
-window.perfCheckSatusAppInit = function() {
+window.perfCheckStatusAppInit = function() {
   var StatusBarComponent = React.createClass({
     displayName: 'StatusBarComponent',
     getInitialState: function getInitialState() {

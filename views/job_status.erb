@@ -18,25 +18,18 @@
         <h2 class="branch-name">
           <span><%= @job[:branch] %></span>
         </h2>
-      <a href="#" class="styled-button view-issue">View Issue</a>
+        <a href="#" class="styled-button view-issue">View Issue</a>
         <a href="<%= @job[:issue_url] %>"> <%= @job[:issue_title] %></a>
 
-        
-        <br>
-
-
       <% else %>
-
+      
         <h2>
           <a href="<%= @job[:issue_url] %>"> <%= @job[:issue_title] %></a>
         </h2>
         <a href="#" class="styled-button view-pr">View #123123</a><br>
         <span><%= @job[:branch] %></span>
         
-
-
       <% end %>      
-
 
       <div class="created-by">
         <% enqueued_at_formatted = (@job[:enqueued_at].utc + Time.zone_offset(config.app.timezone)).strftime("%l:%M%p %b %e, %Y") %>

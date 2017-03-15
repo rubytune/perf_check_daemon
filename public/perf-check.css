@@ -174,7 +174,7 @@ ul.browser-app-results:hover {
 .job header.job-header .styled-button {
   font-size: .8em;
   display: inline-block;
-  margin-left: 10px;
+  margin-left: 0px;
   padding: 3px;
   text-decoration: none;
   color: #000;

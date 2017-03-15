@@ -170,6 +170,12 @@ exports.BrowserApp = React.createClass({
     this.setState({ filter: e.target.value });
   },
 
+  onFilterInputKeyUp: function (e) {
+    e && e.preventDefault();
+    this.filter(this.state.filter);    
+  },
+
+
   onSelectResult: function (id, url, e) {
     if (url && ["A", "BUTTON", "INPUT", "TEXTAREA"].indexOf(e.target.nodeName) == -1) {
       e.preventDefault();
@@ -245,7 +251,7 @@ exports.BrowserApp = React.createClass({
               )
             ),
             React.createElement("input", { ref: "filter", type: "search", name: "f", autoComplete: "off",
-              placeholder: this.props.searchPlaceholder, value: this.state.filter, onChange: this.onFilterInputChange })
+              placeholder: this.props.searchPlaceholder, value: this.state.filter, onChange: this.onFilterInputChange, onKeyUp: this.onFilterInputKeyUp })
           )
         ),
         React.createElement(

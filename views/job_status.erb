@@ -28,8 +28,15 @@
         by
         <span><strong><%= @job[:github_user] %></strong></span>
       </div>
-        <pre class="command"><%= @job[:arguments] %></pre>
-        <a href="#" class="re-run">re-run</a>
+      <pre class="command"><%= @job[:arguments] %></pre>
+      <br>
+      <br>
+      <a href="#" class="styled-button re-run"><i class="fa fa-refresh" aria-hidden="true"></i> &nbsp;Re-Run PerfCheck</a><br>
+      <br>
+      <a href="#" class="styled-button view-pr">View #123123</a><br>
+      <br>
+      <a href="#" class="styled-button view-issue">View Issue</a>
+
     </header>
     
     <% if @job[:details]  %>

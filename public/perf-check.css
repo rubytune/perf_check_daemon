@@ -14,7 +14,7 @@ body,
   height: 100px;
   margin-bottom: 20px;
   background-color: #CCC;
-  background: url('excitebike.jpg');
+  /*background: url('excitebike.jpg');*/
   background-position: 50% 100%;
   background-size: 110%;
 }

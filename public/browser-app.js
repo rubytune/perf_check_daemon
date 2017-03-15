@@ -167,10 +167,11 @@ exports.BrowserApp = React.createClass({
   },
 
   onFilterInputChange: function (e) {
-    this.setState({ filter: e.target.value });
+     this.setState({ filter: e.target.value });
   },
 
   onFilterInputKeyUp: function (e) {
+    this.setState({ filter: e.target.value });
     e && e.preventDefault();
     this.filter(this.state.filter);    
   },

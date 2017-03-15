@@ -101,8 +101,13 @@ body,
   color: #CE0005;
 }
 
-.browser-app-results {
+ul.browser-app-results {
   font-size: .8em;
+  overflow-y: hidden;
+}
+
+ul.browser-app-results:hover {
+  overflow-y: auto;
 }
 
 .browser-app-results li {

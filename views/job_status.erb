@@ -12,22 +12,22 @@
 
   <div class="job">
     <header class="job-header">
-
+      
+      <a href="#" class="styled-button re-run pull-right"><i class="fa fa-refresh" aria-hidden="true"></i> &nbsp;Re-Run PerfCheck</a>
       <% if @job[:issue_url].to_s.include?("issue") %>
       
-        <h2 class="branch-name">
-          <span><%= @job[:branch] %></span>
-        </h2>
-        <a href="#" class="styled-button view-issue">View Issue</a>
-        <a href="<%= @job[:issue_url] %>"> <%= @job[:issue_title] %></a>
+        <a href="<%= @job[:issue_url] %>" class="styled-button view-issue pull-right"><i class="fa fa-github" aria-hidden="true"></i> &nbsp;View Issue</a>
+        <h2 class="branch-name"><%= @job[:branch] %></h2>
+        <hr style="background-color: #EEE;">
+        <h3><%= @job[:issue_title] %></h3>
 
       <% else %>
       
-        <h2>
-          <a href="<%= @job[:issue_url] %>"> <%= @job[:issue_title] %></a>
-        </h2>
-        <a href="#" class="styled-button view-pr">View #123123</a><br>
-        <span><%= @job[:branch] %></span>
+        <a href="<%= @job[:issue_url] %>" class="styled-button view-pr pull-right"><i class="fa fa-github" aria-hidden="true"></i> &nbsp;View #123123</a>
+
+        <h2><%= @job[:issue_title] %></h2>
+        <hr style="background-color: #EEE;">
+        <h3><%= @job[:branch] %></h3>
         
       <% end %>      
 
@@ -42,9 +42,6 @@
         <span><strong><%= @job[:github_user] %></strong></span>
       </div>
       <pre class="command"><%= @job[:arguments] %></pre>
-      <br>
-      <br>
-      <a href="#" class="styled-button re-run"><i class="fa fa-refresh" aria-hidden="true"></i> &nbsp;Re-Run PerfCheck</a><br>
 
     </header>
     
@@ -55,8 +52,7 @@
     <% end %>
 
     <% if File.exist?(PerfCheckDaemon::Job.log_path(@job[:enqueued_at])) %>
-      <h4>Log</h4>
-      <pre><%= File.read(PerfCheckDaemon::Job.log_path(@job[:enqueued_at]), encoding: "UTF-8") %></pre>
+      <pre id="log"><%= File.read(PerfCheckDaemon::Job.log_path(@job[:enqueued_at]), encoding: "UTF-8") %></pre>
     <% else %>
       <h4>No log available.</h4>
     <% end %>

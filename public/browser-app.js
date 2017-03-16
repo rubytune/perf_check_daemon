@@ -173,7 +173,7 @@ exports.BrowserApp = React.createClass({
   onFilterInputKeyUp: function (e) {
     this.setState({ filter: e.target.value });
     e && e.preventDefault();
-    this.filter(this.state.filter);    
+    this.filter(this.state.filter);
   },
 
 
@@ -263,16 +263,11 @@ exports.BrowserApp = React.createClass({
       ),
       React.createElement(
         "div",
-        { className: "browser-app-divider" }
-        
-      ),
-
-      React.createElement(
-        "div",
         { className: "browser-app-viewport" },
         content
       )
     );
+
   }
 });
 

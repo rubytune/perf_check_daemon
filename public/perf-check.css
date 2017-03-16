@@ -1,3 +1,14 @@
+
+@font-face {
+    font-family: OperatorMonoLight;
+    src: url("OperatorMonoSSm-Light.otf") format("opentype");
+}
+
+@font-face {
+    font-family: OperatorMonoBook;
+    src: url("OperatorMonoSSm-Book.otf") format("opentype");
+}
+
 a {
   text-decoration: none;
   color: #658EBF;
@@ -14,7 +25,7 @@ body,
   height: 100px;
   margin-bottom: 20px;
   background-color: #CCC;
-  /*background: url('excitebike.jpg');*/
+  background: url('excitebike.jpg');
   background-position: 50% 100%;
   background-size: 110%;
 }
@@ -41,17 +52,18 @@ body,
   top: 0;
   right: 0;
   margin: 5px;
-  padding: 10px 15px;
+  padding: 6px 10px;
   color: #FFF;
-  border-radius: 5px;
+  /*border-radius: 5px;*/
+  font-size: 12px;
 }
 
 .system-status.online {
-  background: #19B81D;
+  background: #18711A;
 }
 
 .system-status.offline {
-  background: #CE0005;
+  background: #B01A1E;
 }
 
 .status-label,
@@ -60,11 +72,12 @@ body,
   display: inline-block;
   width: 50px;
   margin-right: 9px;
-  padding: 2px 1px;
+  padding: 3px 1px;
   text-align: center;
-  border: 1px solid #DDD;
-  border-radius: 2px;
+  /*border: 1px solid #DDD;*/
+  /*border-radius: 2px;*/
   background-color: #EFEFEF;
+  text-shadow: 1px 0px 1px #666; 
 }
 
 .browser-app-results li:hover {
@@ -79,7 +92,7 @@ body,
 .status-label.running,
 .status.running {
   color: #FFF;
-  background-color: #19B81D;
+  background-color: #19B81D!important;
 }
 
 .status-label.queued,
@@ -90,15 +103,15 @@ body,
 
 .status-label.complete,
 .status.complete {
-  color: #19B81D;
-  /*background-color: #19B81D !important;*/
+  color: #FFF;
+  background-color: #7AC57B !important;
 }
 
 .status-label.failed,
 .status.failed {
-  /*color: #FFF;*/
-  /*background-color: #CE0005 !important;*/
-  color: #CE0005;
+  color: #FFF;
+  background-color: #E17376 !important;
+  /*color: #CE0005;*/
 }
 
 ul.browser-app-results {
@@ -147,34 +160,25 @@ ul.browser-app-results:hover {
 
 .job header.job-header {
   border: 1px solid #EEE;
-  padding: 10px;
-
+  padding: 12px;
+  padding-top: 14px;
 }
 
-.job header.job-header h2.branch-name {
+.job header.job-header h2 {
   color: #000;
+  font-size: 28px;
 }
 
-.job header.job-header .issue-or-pull-request {
-
-}
-
-.job header.job-header .re-run {
-  /*font-size: .8em;
-  display: inline-block;
-  margin-left: 10px;
-  padding: 3px;
-  text-decoration: none;
+.job header.job-header h3 {
   color: #000;
-  border: 1px solid #CCC;
-  border-radius: 5px;
-  background-color: #EEE;*/
+  margin-top: 12px;
 }
+
 
 .job header.job-header .styled-button {
   font-size: .8em;
-  display: inline-block;
-  margin-left: 0px;
+  display: block;
+  margin-left: 8px;
   padding: 3px;
   text-decoration: none;
   color: #000;
@@ -213,13 +217,22 @@ ul.browser-app-results:hover {
   border: 1px solid #CCC;
   margin-top: 10px;
   margin-bottom: 0;
-  font-size: .9em;
-  padding: 3px 8px 3px 8px;
+  font-size: .7em;
+  padding: 2px 8px 2px 7px;
   color: #000;
+  font-family: OperatorMonoBook;
+}
+
+.job header.job-header hr {
+  background-color: #eee;
+  border: 0;
+  height: 1px;
+  margin-top: 14px;
 }
 
 .job header.job-header .created-by { 
   font-size: .8em;
+  color: #333;
 }
 
 .job .status label {
@@ -239,10 +252,12 @@ ul.browser-app-results:hover {
   max-height: 400px;
   margin: 0 0 50px 0;
   padding: 10px;
-  background-color: #000;
+  background-color: #3e3e3e;
   color: #FFF;
   border: 1px solid #CCC;
-  font-size: .8em;
+  font-size: .7em;
+  font-family: OperatorMonoLight;
+  line-height: 1.5em;
 }
 
 h1 {

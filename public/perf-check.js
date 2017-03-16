@@ -9,6 +9,7 @@ window.perfCheckAppInit = function() {
     initialSelectedResult: window.perfcheckOpts.initialSelectedResult,
 
     resultTag: function(props) {
+      
       if (props.html)
         return React.createElement("div", {
           dangerouslySetInnerHTML: {__html: props.html}
@@ -27,6 +28,8 @@ window.perfCheckAppInit = function() {
           React.createElement("small", { className: "name" }, ["by " + props.github_user])
         ]
       );
+
+
       return e;
     }
   }, container.innerHTML);
@@ -80,7 +83,7 @@ window.perfCheckStatusAppInit = function() {
         return React.createElement(
           'span',
           { className: 'system-status offline' },
-          'Daemon Offline ',
+          'Daemon Offline  ',
           React.createElement('i', { className: 'fa fa-times' })
         );
       }

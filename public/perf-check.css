@@ -41,7 +41,7 @@ body,
   top: 0;
   right: 0;
   margin: 5px;
-  padding: 10px 15px;
+  padding: 6px 10px;
   color: #FFF;
   /*border-radius: 5px;*/
 }
@@ -239,7 +239,7 @@ ul.browser-app-results:hover {
   max-height: 400px;
   margin: 0 0 50px 0;
   padding: 10px;
-  background-color: #000;
+  background-color: #3e3e3e;
   color: #FFF;
   border: 1px solid #CCC;
   font-size: .8em;

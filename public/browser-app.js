@@ -229,6 +229,7 @@ exports.BrowserApp = React.createClass({
       this.state.viewportHTML
     );
 
+
     return React.createElement(
       "div",
       { ref: "ui", className: "browser-app" },

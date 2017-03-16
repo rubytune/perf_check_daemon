@@ -212,7 +212,7 @@ module PerfCheckDaemon
 
       def query_check_and_change(test_case)
         l = config.limits.queries
-        if test_case.this_query_count < test_case.reference_query_count && test_case.reference_query_count >= l
+        if test_case.this_query_count < test_case.reference_query_count 
           ":white_check_mark: Reduced AR queries from #{test_case.reference_query_count} to #{test_case.this_query_count}!"
         elsif test_case.this_query_count > test_case.reference_query_count && test_case.this_query_count >= l
           ":x: Increased AR queries from #{test_case.reference_query_count} to #{test_case.this_query_count}!"

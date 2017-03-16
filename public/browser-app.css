@@ -17,9 +17,7 @@ a {
 .browser-app {
   display: flex;
   flex-direction: row;
-
   height: 100%;
-  padding-top: 10px;
 }
 
 .browser-app-filter {

@@ -10,9 +10,6 @@ window.perfCheckAppInit = function() {
 
     resultTag: function(props) {
       
-      var objDiv = document.getElementById("log");
-      objDiv.scrollTop = objDiv.scrollHeight;
-
       if (props.html)
         return React.createElement("div", {
           dangerouslySetInnerHTML: {__html: props.html}

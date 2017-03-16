@@ -80,7 +80,7 @@ window.perfCheckStatusAppInit = function() {
         return React.createElement(
           'span',
           { className: 'system-status offline' },
-          'Daemon Offline ',
+          'Daemon Offline  ',
           React.createElement('i', { className: 'fa fa-times' })
         );
       }

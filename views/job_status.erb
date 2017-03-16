@@ -52,7 +52,6 @@
     <% end %>
 
     <% if File.exist?(PerfCheckDaemon::Job.log_path(@job[:enqueued_at])) %>
-      <h4>Log</h4>
       <pre><%= File.read(PerfCheckDaemon::Job.log_path(@job[:enqueued_at]), encoding: "UTF-8") %></pre>
     <% else %>
       <h4>No log available.</h4>

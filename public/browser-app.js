@@ -263,12 +263,6 @@ exports.BrowserApp = React.createClass({
       ),
       React.createElement(
         "div",
-        { className: "browser-app-divider" }
-        
-      ),
-
-      React.createElement(
-        "div",
         { className: "browser-app-viewport" },
         content
       )

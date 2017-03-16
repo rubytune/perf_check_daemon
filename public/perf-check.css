@@ -44,14 +44,15 @@ body,
   padding: 6px 10px;
   color: #FFF;
   /*border-radius: 5px;*/
+  font-size: 12px;
 }
 
 .system-status.online {
-  background: #19B81D;
+  background: #18711A;
 }
 
 .system-status.offline {
-  background: #CE0005;
+  background: #B01A1E;
 }
 
 .status-label,

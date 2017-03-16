@@ -147,34 +147,25 @@ ul.browser-app-results:hover {
 
 .job header.job-header {
   border: 1px solid #EEE;
-  padding: 10px;
-
+  padding: 12px;
+  padding-top: 14px;
 }
 
-.job header.job-header h2.branch-name {
+.job header.job-header h2 {
   color: #000;
+  font-size: 28px;
 }
 
-.job header.job-header .issue-or-pull-request {
-
-}
-
-.job header.job-header .re-run {
-  /*font-size: .8em;
-  display: inline-block;
-  margin-left: 10px;
-  padding: 3px;
-  text-decoration: none;
+.job header.job-header h3 {
   color: #000;
-  border: 1px solid #CCC;
-  border-radius: 5px;
-  background-color: #EEE;*/
+  margin-top: 12px;
 }
+
 
 .job header.job-header .styled-button {
   font-size: .8em;
-  display: inline-block;
-  margin-left: 0px;
+  display: block;
+  margin-left: 8px;
   padding: 3px;
   text-decoration: none;
   color: #000;
@@ -213,13 +204,21 @@ ul.browser-app-results:hover {
   border: 1px solid #CCC;
   margin-top: 10px;
   margin-bottom: 0;
-  font-size: .9em;
-  padding: 3px 8px 3px 8px;
+  font-size: .7em;
+  padding: 2px 8px 2px 7px;
   color: #000;
+}
+
+.job header.job-header hr {
+  background-color: #eee;
+  border: 0;
+  height: 1px;
+  margin-top: 14px;
 }
 
 .job header.job-header .created-by { 
   font-size: .8em;
+  color: #333;
 }
 
 .job .status label {

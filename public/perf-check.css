@@ -24,7 +24,21 @@ body,
 #content {
   padding-top: 120px;
   box-sizing: border-box;
+}
 
+#content .default-content {
+  position: absolute;
+  top: 200px;
+  left: 30%;  
+  /*background-color: #FF0;*/
+  /*width: 200px;*/
+  /*height: 200px;*/
+}
+
+#content .default-content h1{
+  color: #000;
+  text-align: center;
+  font-size: 36px;
 }
 
 #header {
@@ -251,6 +265,12 @@ ul.browser-app-results:hover {
 
 .job .details {
   padding-top: 20px;
+}
+
+.details pre {
+  font-size: .7em;
+  font-family: OperatorMonoLight;
+  line-height: 1.5em;
 }
 
 .job pre {

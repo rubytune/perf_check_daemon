@@ -14,7 +14,7 @@ body,
   height: 100px;
   margin-bottom: 20px;
   background-color: #CCC;
-  background: url('excitebike.jpg');
+  /*background: url('excitebike.jpg');*/
   background-position: 50% 100%;
   background-size: 110%;
 }
@@ -174,7 +174,7 @@ ul.browser-app-results:hover {
 .job header.job-header .styled-button {
   font-size: .8em;
   display: inline-block;
-  margin-left: 10px;
+  margin-left: 0px;
   padding: 3px;
   text-decoration: none;
   color: #000;

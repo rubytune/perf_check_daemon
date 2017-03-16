@@ -23,7 +23,7 @@ a {
 }
 
 .browser-app-filter {
-  flex: 0 0 320px;
+  flex: 0 0 330px;
 }
 
 .browser-app-divider {
@@ -130,7 +130,6 @@ a {
 .browser-app-filter-container .browser-app-filter-clear a {
   position: relative;
   top: -4px;
-  /*color: #00f;*/
 }
 
 

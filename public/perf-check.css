@@ -1,7 +1,12 @@
 
 @font-face {
-    font-family: OperatorMono;
+    font-family: OperatorMonoLight;
     src: url("OperatorMonoSSm-Light.otf") format("opentype");
+}
+
+@font-face {
+    font-family: OperatorMonoBook;
+    src: url("OperatorMonoSSm-Book.otf") format("opentype");
 }
 
 a {
@@ -215,7 +220,7 @@ ul.browser-app-results:hover {
   font-size: .7em;
   padding: 2px 8px 2px 7px;
   color: #000;
-  font-family: OperatorMono;
+  font-family: OperatorMonoBook;
 }
 
 .job header.job-header hr {
@@ -251,7 +256,7 @@ ul.browser-app-results:hover {
   color: #FFF;
   border: 1px solid #CCC;
   font-size: .7em;
-  font-family: OperatorMono;
+  font-family: OperatorMonoLight;
   line-height: 1.5em;
 }
 

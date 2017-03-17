@@ -78,7 +78,7 @@ body,
   padding: 5px 9px;
   color: #FFF;
   font-size: 12px;
-  text-shadow: 1px 0px 1px #666; 
+  text-shadow: 1px 0px 1px #000; 
 }
 
 .system-status.online {

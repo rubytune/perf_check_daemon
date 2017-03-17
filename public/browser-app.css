@@ -10,7 +10,6 @@ html, body {
 }
 
 a {
-  color: #658EBF;
   text-decoration: none;
 }
 
@@ -98,11 +97,13 @@ a {
   padding-left: 8px;
   padding-right: 8px;
   -webkit-appearance: none;
-  border: 1px solid #cccccc;
+  border: 1px solid #EEE;
   outline: 0;
   box-shadow: none;
-  border-radius: 4px;
+  /*border-radius: 4px;*/
 }
+
+
 
 .browser-app-filter input[type=text]::-ms-clear,
 .browser-app-filter input[type=text]::-ms-reveal {
@@ -128,6 +129,7 @@ a {
 .browser-app-filter-container .browser-app-filter-clear a {
   position: relative;
   top: -4px;
+  color: #555;
 }
 
 

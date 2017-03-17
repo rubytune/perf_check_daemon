@@ -85,8 +85,11 @@ a {
 /* Results filter form */
 .browser-app-filter-container {
   position: relative;
-  width: 95%;
+  width: 100%;
   margin: 0px auto 10px auto;
+  padding-left: 10px;
+  box-sizing: border-box;
+
 }
 
 .browser-app-filter input[type=search] {

@@ -24,7 +24,21 @@ body,
 #content {
   padding-top: 120px;
   box-sizing: border-box;
+}
 
+#content #default-content {
+  position: absolute;
+  top: 200px;
+  left: 30%;  
+  /*background-color: #FF0;*/
+  /*width: 200px;*/
+  /*height: 200px;*/
+}
+
+#content #default-content h1{
+  color: #000;
+  text-align: center;
+  font-size: 36px;
 }
 
 #header {
@@ -150,12 +164,12 @@ ul.browser-app-results:hover {
 
 .browser-app-results li .time {
   font-size: 10px;
-  margin-top: 4px;
+  margin-top: 1px;
   clear: both;
   float: left;
   display: block;
   margin-right: 4px;
-  margin-top: 8px;
+  margin-top: 6px;
 }
 
 .browser-app-results li .name {
@@ -163,7 +177,7 @@ ul.browser-app-results:hover {
   margin-top: 4px;
   display: block;
   float: left;
-  margin-top: 8px;
+  margin-top: 6px;
 }
 
 .job header.job-header {
@@ -180,6 +194,7 @@ ul.browser-app-results:hover {
 .job header.job-header h3 {
   color: #000;
   margin-top: 12px;
+  margin-bottom: -1px;
 }
 
 
@@ -251,6 +266,12 @@ ul.browser-app-results:hover {
 
 .job .details {
   padding-top: 20px;
+}
+
+.details pre {
+  font-size: .7em;
+  font-family: OperatorMonoLight;
+  line-height: 1.5em;
 }
 
 .job pre {

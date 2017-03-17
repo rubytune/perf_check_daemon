@@ -1,4 +1,12 @@
 window.perfCheckAppInit = function() {
+  
+  hrefSegments = window.location.href.split("/");
+  stringAfterStatus = hrefSegments[hrefSegments.length - 1];
+
+  if (stringAfterStatus) {
+    document.getElementById("default-content").innerHTML = "";
+  }
+
   var container = document.getElementById("content");
 
   var app = React.createElement(BrowserApp, {

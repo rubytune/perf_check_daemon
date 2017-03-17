@@ -24,6 +24,11 @@ body,
 #content {
   padding-top: 120px;
   box-sizing: border-box;
+  display: none;
+}
+
+#content.show-me {
+  display: block; 
 }
 
 #content #default-content {

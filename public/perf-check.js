@@ -7,6 +7,9 @@ window.perfCheckAppInit = function() {
     document.getElementById("default-content").innerHTML = "";
   }
 
+  var d = document.getElementById("content");
+  d.className += " show-me";
+
   var container = document.getElementById("content");
 
   var app = React.createElement(BrowserApp, {

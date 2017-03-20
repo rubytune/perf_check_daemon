@@ -24,6 +24,11 @@ body,
 #content {
   padding-top: 120px;
   box-sizing: border-box;
+  display: none;
+}
+
+#content.show-me {
+  display: block; 
 }
 
 #content #default-content {
@@ -55,8 +60,9 @@ body,
 #header h1 {
   padding-top: 30px;
   padding-left: 12px;
-  letter-spacing: 1px;
+  letter-spacing: 1.3px;
   color: #000;
+  text-shadow: 1px 0px 1px #000;
 }
 
 .pull-right {
@@ -73,11 +79,11 @@ body,
   position: absolute;
   top: 0;
   right: 0;
-  margin: 5px;
-  padding: 6px 10px;
+  margin: 7px;
+  padding: 5px 9px;
   color: #FFF;
-  /*border-radius: 5px;*/
   font-size: 12px;
+  text-shadow: 1px 0px 1px #000; 
 }
 
 .system-status.online {
@@ -86,6 +92,10 @@ body,
 
 .system-status.offline {
   background: #B01A1E;
+}
+
+.system-status.offline .fa-times {
+  margin-left: 4px;
 }
 
 .status-label,
@@ -100,6 +110,7 @@ body,
   /*border-radius: 2px;*/
   background-color: #EFEFEF;
   text-shadow: 1px 0px 1px #666; 
+  margin-right: 9px;
 }
 
 .browser-app-results li:hover {
@@ -153,7 +164,7 @@ ul.browser-app-results:hover {
   margin-top: 4px;
   display: block;
   float: left;
-  margin-right: 6px;
+  margin-right: 8px;
 }
 
 .browser-app-results li .branch {

@@ -1,11 +1,14 @@
 window.perfCheckAppInit = function() {
   
-  hrefSegments = window.location.href.split("/");
+  hrefSegments = window.location.href.split("status");
   stringAfterStatus = hrefSegments[hrefSegments.length - 1];
 
-  if (stringAfterStatus) {
+  if (stringAfterStatus.length > 1) {
     document.getElementById("default-content").innerHTML = "";
   }
+
+  var d = document.getElementById("content");
+  d.className += " show-me";
 
   var container = document.getElementById("content");
 

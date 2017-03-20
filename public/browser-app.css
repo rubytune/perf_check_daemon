@@ -10,7 +10,6 @@ html, body {
 }
 
 a {
-  color: #658EBF;
   text-decoration: none;
 }
 
@@ -86,8 +85,11 @@ a {
 /* Results filter form */
 .browser-app-filter-container {
   position: relative;
-  width: 95%;
+  width: 100%;
   margin: 0px auto 10px auto;
+  padding-left: 10px;
+  box-sizing: border-box;
+
 }
 
 .browser-app-filter input[type=search] {
@@ -98,11 +100,13 @@ a {
   padding-left: 8px;
   padding-right: 8px;
   -webkit-appearance: none;
-  border: 1px solid #cccccc;
+  border: 1px solid #EEE;
   outline: 0;
   box-shadow: none;
-  border-radius: 4px;
+  /*border-radius: 4px;*/
 }
+
+
 
 .browser-app-filter input[type=text]::-ms-clear,
 .browser-app-filter input[type=text]::-ms-reveal {
@@ -128,6 +132,7 @@ a {
 .browser-app-filter-container .browser-app-filter-clear a {
   position: relative;
   top: -4px;
+  color: #555;
 }
 
 

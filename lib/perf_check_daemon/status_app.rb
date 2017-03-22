@@ -26,7 +26,7 @@ module PerfCheckDaemon
         text.gsub!(/:white_check_mark:/,'<i class="fa fa-check-square" aria-hidden="true"></i>')
         text.gsub!(/:warning:/,'<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>')
         text.gsub!(/:x:/,'<i class="fa fa-times-circle" aria-hidden="true"></i>')
-        Kramdown::Document.new(text).to_html
+        Kramdown::Document.new(text, input: 'GFM', hard_wrap: true).to_html
       end
 
       def time_ago_in_words(time)

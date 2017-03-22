@@ -1,12 +1,12 @@
 
 @font-face {
     font-family: OperatorMonoLight;
-    src: url("OperatorMonoSSm-Light.otf") format("opentype");
+    src: url("/assets/fonts/OperatorMonoSSm-Light.otf") format("opentype");
 }
 
 @font-face {
     font-family: OperatorMonoBook;
-    src: url("OperatorMonoSSm-Book.otf") format("opentype");
+    src: url("/assets/fonts/OperatorMonoSSm-Book.otf") format("opentype");
 }
 
 a {
@@ -50,7 +50,7 @@ body,
   height: 100px;
   margin-bottom: 20px;
   background-color: #CCC;
-  background: url('excitebike.jpg');
+  background: url('/assets/images/excitebike.jpg');
   background-position: 50% 100%;
   background-size: 110%;
   position: absolute;

@@ -280,10 +280,25 @@ ul.browser-app-results:hover {
 }
 
 .job .details pre {
-  font-size: .7em;
+  font-size: .7rem;
   font-family: OperatorMonoLight;
-  line-height: 1.5em;
+  line-height: 1.5rem;
 }
+
+.job .details p code {
+  font-size: .7rem;
+  font-family: OperatorMonoLight;
+  line-height: 1.5rem;
+  display: inline-block;
+  background-color: #EFEFEF;
+  border: 1px solid #CCC;
+  padding: 2px 8px 2px 7px;
+  margin-left: 4px;
+  color: #000;
+  font-family: OperatorMonoBook;
+
+}
+
 
 .job .details .fa-check-square {
   color: #7AC57B;

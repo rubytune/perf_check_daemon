@@ -4,8 +4,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
-    <link href="/browser-app.css" rel="stylesheet" type="text/css" />
-    <link href="/perf-check.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/stylesheets/browser-app.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/stylesheets/perf-check.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
     <div id="header">
@@ -15,15 +15,15 @@
     <div id="content">
       <div id="default-content">
         <h1>Pick a job!</h1>
-        <img src="arrow.png" alt="" style="width: 300px; height: auto; margin-top: 20px;">
+        <img src="/assets/images/arrow.png" alt="" style="width: 300px; height: auto; margin-top: 20px;">
       </div>
       <%== yield %>
     </div>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.0/react.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.0/react-dom.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment-with-locales.min.js"></script>
-    <script type="text/javascript" src="/browser-app.js"></script>
-    <script type="text/javascript" src="/perf-check.js"></script>
+    <script type="text/javascript" src="/assets/javascripts/browser-app.js"></script>
+    <script type="text/javascript" src="/assets/javascripts/perf-check.js"></script>
     <script type="text/javascript">
       window.perfcheckOpts = {
         initialFilter: "<%= params["f"] %>",

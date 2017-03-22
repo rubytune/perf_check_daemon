@@ -279,11 +279,26 @@ ul.browser-app-results:hover {
   padding-top: 20px;
 }
 
-.details pre {
+.job .details pre {
   font-size: .7em;
   font-family: OperatorMonoLight;
   line-height: 1.5em;
 }
+
+.job .details .fa-check-square {
+  color: #7AC57B;
+}
+
+.job .details .fa-times-circle {
+  color: #E17376;
+}
+
+.job .details .fa-exclamation-triangle {
+  color: #E99835;
+}
+
+
+
 
 .job pre {
   overflow-x: auto;

@@ -13,7 +13,7 @@
   <div class="job">
     <header class="job-header">
       
-      <a href="#" class="styled-button re-run pull-right"><i class="fa fa-refresh" aria-hidden="true"></i> &nbsp;Re-Run PerfCheck</a>
+      <a href="/#{params[:job_id]}/rerun" class="styled-button re-run pull-right"><i class="fa fa-refresh" aria-hidden="true"></i> &nbsp;Re-Run PerfCheck</a>
       <% if @job[:issue_url].to_s.include?("issue") %>
       
         <a href="<%= @job[:issue_url] %>" class="styled-button view-issue pull-right"><i class="fa fa-github" aria-hidden="true"></i> &nbsp;View Issue</a>

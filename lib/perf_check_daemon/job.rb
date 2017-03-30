@@ -58,6 +58,9 @@ module PerfCheckDaemon
     rescue PerfCheck::Exception => e
       details = post_error(job, e)
       create_finished_job(job, details, failed: true)
+    rescue Exception => e
+      details = post_error(job, e)
+      create_finished_job(job, details, failed: true)      
     ensure
       $stdout.reopen(stdout)
       $stderr.reopen(stderr)

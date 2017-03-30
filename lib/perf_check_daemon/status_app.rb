@@ -215,7 +215,7 @@ module PerfCheckDaemon
 
     get "/:job_id/rerun" do
       @search_results = search_results(params["f"])
-      @job = find_job(find_job(params["job_id"]))
+      @job = find_job(params["job_id"])
       @job = Hash[@job.map{ |k, v| [k.to_s, v] }]
       @job["created_at"] = Time.now
       @job["issue_html_url"] = @job["issue_url"]

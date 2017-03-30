@@ -213,7 +213,7 @@ module PerfCheckDaemon
       erb :job_status, layout: layout, content_type: "text/html"
     end
 
-    get "/status/:job_id/rerun" do
+    get "/:job_id/rerun" do
       @search_results = search_results(params["f"])
       @job = find_job(find_job(params["job_id"]))
       @job = Hash[@job.map{ |k, v| [k.to_s, v] }]

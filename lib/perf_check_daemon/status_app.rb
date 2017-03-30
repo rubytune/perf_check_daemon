@@ -181,6 +181,10 @@ module PerfCheckDaemon
       rescue Redis::CannotConnectError
         halt 500, "Cannot connect to redis server"
       end
+
+      def find_job(job_id)
+        search_results(id: job_id)[0]
+      end
     end
 
     get "/service-info.json" do
@@ -203,10 +207,26 @@ module PerfCheckDaemon
 
     get "/:job_id" do
       @search_results = search_results(params["f"])
-      @job = search_results(id: params["job_id"])[0]
+      @job = find_job(params["job_id"])
 
       layout = request.xhr? ? nil : :layout
       erb :job_status, layout: layout, content_type: "text/html"
+    end
+
+    get "/:job_id/rerun" do
+      @search_results = search_results(params["f"])
+      @job = find_job(params["job_id"])
+      @job = Hash[@job.map{ |k, v| [k.to_s, v] }]
+      @job["created_at"] = Time.now
+      @job["issue_html_url"] = @job["issue_url"]
+      @job["github_holder"] = {"user" => {"login" => @job["github_user"]}}
+      @job.delete("complete")
+
+      Resque.enqueue(PerfCheckDaemon::Job, @job)
+
+      new_job_id = @job["created_at"].strftime("%Y%m%d%H%M%S.%L")
+
+      redirect "/#{new_job_id}"
     end
 
     before // do

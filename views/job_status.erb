@@ -23,7 +23,7 @@
 
       <% else %>
       
-        <a href="<%= @job[:issue_url] %>" class="styled-button view-pr pull-right"><i class="fa fa-github" aria-hidden="true"></i> &nbsp;View <%= "##{@job[:issue_url].split("/")[-1]}" if @job[:issue_url] %></a>
+        <a href="<%= @job[:issue_url] %>" class="styled-button view-pr pull-right"><i class="fa fa-github" aria-hidden="true"></i> &nbsp;View <%= "##{@job[:issue_url].split('/')[-1]}" if @job[:issue_url] %></a>
 
         <h2><%= @job[:issue_title] %></h2>
         <hr style="background-color: #EEE;">

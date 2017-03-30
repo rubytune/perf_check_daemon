@@ -225,7 +225,7 @@ module PerfCheckDaemon
       Resque.enqueue(PerfCheckDaemon::Job, @job)
       new_job_id = @job["created_at"].strftime("%Y%m%d%H%M%S.%L")
 
-      redirect "/#{new_job_id}"
+      redirect "/status/#{new_job_id}"
     end
 
     before // do

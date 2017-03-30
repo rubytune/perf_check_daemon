@@ -142,7 +142,7 @@ module PerfCheckDaemon
         elsif query.is_a?(Hash)
           scope = FinishedJob.where(job_id: query[:id])
         else
-          scope = FinishedJob.limit(25)
+          scope = FinishedJob.order(created_at: :DESC).limit(25)
         end
 
         scope.order("created_at DESC").map do |job|
@@ -218,6 +218,7 @@ module PerfCheckDaemon
       @job["issue_html_url"] = @job["issue_url"]
       @job["github_holder"] = {"user" => {"login" => @job["github_user"]}}
       @job.delete("complete")
+      @job.delete("failed")
 
       Resque.enqueue(PerfCheckDaemon::Job, @job)
       new_job_id = @job["created_at"].strftime("%Y%m%d%H%M%S.%L")

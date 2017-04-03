@@ -264,7 +264,7 @@ module PerfCheckDaemon
         end
         
         if !this_trace && !reference_trace
-          messages << ":mag: No Backtrace was captured. This often means a low level boot issue with the app. Check the server."
+          messages << ":mag: No backtrace captured, indicating a low level boot issue. Ensure that the app boots happily on the perf check server."
         end
 
         messages.join("\n")

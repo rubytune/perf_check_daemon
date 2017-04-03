@@ -125,10 +125,11 @@ module PerfCheckDaemon
               enqueued_at: created_at
             )
 
-            break if !query && failed.size > 25
+            break if !query
           end
         end
-        failed
+
+        failed.sort{|job, job_2| job_2[:enqueued_at].to_i <=> job[:enqueued_at].to_i }.first(25)
       end
 
       def completed_jobs(query)

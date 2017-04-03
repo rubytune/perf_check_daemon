@@ -58,7 +58,7 @@ module PerfCheckDaemon
     rescue PerfCheck::Exception => e
       details = post_error(job, e)
       create_finished_job(job, details, failed: true)
-    rescue Exception => e
+    rescue => e
       details = post_error(job, e)
       create_finished_job(job, details, failed: true)      
     ensure
@@ -261,6 +261,10 @@ module PerfCheckDaemon
         if reference_trace
           gist = backtrace_url(job['reference'], reference_trace)
           messages << ":mag: [Backtrace captured](#{gist}) (#{job['reference']})"
+        end
+        
+        if !this_trace && !reference_trace
+          messages << ":mag: No Backtrace was captured. This often means a low level boot issue with the app. Check the server."
         end
 
         messages.join("\n")

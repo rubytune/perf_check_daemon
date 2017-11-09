@@ -4,7 +4,7 @@ This repo contains:
 
 1) A Sinatra app that receives webhooks from github
 
-When a certain user is mentionned, it will fire off
+When a certain user is mentioned, it will fire off
 
 2) A resque job that automates Rails performance testing via [perf_check](https://github.com/rubytune/perf_check).
 
@@ -37,7 +37,7 @@ Three separate comments will be posted in reply. Please see the [perf_check read
 
 ### Setup
 
-#### Prerequisites 
+#### Prerequisites
 
 1. Redis
 2. To receive github webhook you'll need to be reachable at an external address/port combination.
@@ -75,9 +75,9 @@ Add two web hooks to your github repository:
 
   * Aim `PullRequest` events at `http://example.com/pull_request`
   * Aim `IssueComment` and `PullRequestReviewComment` events at `http://example.com/comment`
-  
+
 You'll also need the github token mentioned in the config above.
-  
+
 
 ### Running the app
 
@@ -88,9 +88,9 @@ You'll also need the github token mentioned in the config above.
 There are two components you'll need to daemonize:
 
   * The [sinatra app](https://github.com/wioux/perf_check_daemon/blob/master/lib/perf_check_daemon/app.rb) which listens for github web hooks
-  * The [resque worker](https://github.com/wioux/perf_check_daemon/blob/master/lib/perf_check_daemon/job.rb) which will do the actual perf checking and post the results back to github. 
+  * The [resque worker](https://github.com/wioux/perf_check_daemon/blob/master/lib/perf_check_daemon/job.rb) which will do the actual perf checking and post the results back to github.
 
-Boot up the server with 
+Boot up the server with
 
 `rackup -p 3000`
 

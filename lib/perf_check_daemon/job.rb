@@ -49,7 +49,7 @@ module PerfCheckDaemon
         perf_check.parse_arguments(job['arguments'])
         perf_check.run
       end
-      
+
       details = post_results(job, perf_check)
       create_finished_job(job, details)
     rescue OptionParser::InvalidOption => e
@@ -60,7 +60,7 @@ module PerfCheckDaemon
       create_finished_job(job, details, failed: true)
     rescue => e
       details = post_error(job, e)
-      create_finished_job(job, details, failed: true)      
+      create_finished_job(job, details, failed: true)
     ensure
       $stdout.reopen(stdout)
       $stderr.reopen(stderr)
@@ -128,12 +128,7 @@ module PerfCheckDaemon
       capture("cd #{app_path} &&
                git remote prune origin 1>&2 &&
                git fetch --all 1>&2 &&
-               git checkout master 1>&2 &&
-               git submodule update 1>&2 &&
-               git pull 1>&2 &&
-               git checkout #{branch} 1>&2 &&
-               git submodule update 1>&2 &&
-               git pull 1>&2 &&
+               git reset --hard origin/#{branch} --quiet &&
                git submodule update 1>&2 &&
                bundle 1>&2")
     end
@@ -215,7 +210,7 @@ module PerfCheckDaemon
 
       def query_check_and_change(test_case)
         l = config.limits.queries
-        if test_case.this_query_count < test_case.reference_query_count 
+        if test_case.this_query_count < test_case.reference_query_count
           ":white_check_mark: Reduced AR queries from #{test_case.reference_query_count} to #{test_case.this_query_count}!"
         elsif test_case.this_query_count > test_case.reference_query_count && test_case.this_query_count >= l
           ":x: Increased AR queries from #{test_case.reference_query_count} to #{test_case.this_query_count}!"
@@ -262,7 +257,7 @@ module PerfCheckDaemon
           gist = backtrace_url(job['reference'], reference_trace)
           messages << ":mag: [Backtrace captured](#{gist}) (#{job['reference']})"
         end
-        
+
         if !this_trace && !reference_trace
           messages << ":mag: No backtrace captured, indicating a low level boot issue. Ensure that the app boots happily on the perf check server."
         end

@@ -55,18 +55,20 @@ module PerfCheckDaemon
       "Ok"
     end
 
-    before /pull_request|comment/ do
-      body = request.body.read
-      if secret = config.github.hook_secret
-        digest = "sha1=#{OpenSSL::HMAC.hexdigest(HMAC_DIGEST, secret, body)}"
-        if Rack::Utils.secure_compare(digest, request.env['HTTP_X_HUB_SIGNATURE'])
-          @payload = JSON.parse(body)
+    ["/comment","/pull_request"].each do |action|
+      before action do
+        body = request.body.read
+        if secret = config.github.hook_secret
+          digest = "sha1=#{OpenSSL::HMAC.hexdigest(HMAC_DIGEST, secret, body)}"
+          if Rack::Utils.secure_compare(digest, request.env['HTTP_X_HUB_SIGNATURE'])
+            @payload = JSON.parse(body)
+          else
+            warn "Warning: Signature does not match request digest. Dropping hook."
+            halt 500, "Signatures didn't match!"
+          end
         else
-          warn "Warning: Signature does not match request digest. Dropping hook."
-          halt 500, "Signatures didn't match!"
+          @payload = JSON.parse(body)
         end
-      else
-        @payload = JSON.parse(body)
       end
     end
 

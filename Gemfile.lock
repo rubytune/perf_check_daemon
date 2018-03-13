@@ -30,7 +30,7 @@ GEM
     multi_json (1.12.2)
     multi_xml (0.6.0)
     mustermann (1.0.1)
-    perf_check (0.9.1)
+    perf_check (0.10.0)
       colorize
       diffy
       rake
